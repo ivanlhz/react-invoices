@@ -20,6 +20,9 @@ module.exports = {
           fallback: "style-loader",
           use: "css-loader!sass-loader"
         })
+      },{
+        test: /node_modules\/(pdfkit|brotli|fontkit|linebreak|png-js|unicode-properties)/,
+        use:{loader: 'transform-loader?brfs'},
       }
     ]
   }, plugins: [
