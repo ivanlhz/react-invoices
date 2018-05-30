@@ -1,7 +1,8 @@
 {
-  "name": "test1",
+  "name": "work-orders",
   "version": "1.0.0",
   "main": "index.js",
+  "author":"ivanlhz",
   "license": "MIT",
   "scripts": {
     "start:dev": "node_modules/.bin/webpack-dev-server --hot --mode development --config config/webpack.base.conf.js"
