@@ -13,9 +13,9 @@ class App extends Component {
     tlfno: '',
     dni: '',
     location: '',
-    entryDate:'',
+    entryDate: '',
     deliveryDate: '',
-    budget: '', 
+    budget: '',
     model: '',
     box: '',
     control: '',
@@ -35,17 +35,42 @@ class App extends Component {
     });
   };
 
+  writeCompanyInfo = doc => {
+    doc.fontSize(10);
+    doc.text('LVMH RELOJERIA Y JOYERIA ESPAÑA', 20, 20, { width: 195, align: 'center' });
+    doc.fontSize(8);
+    doc.text('Servicio Técnico Oficial de Canarias', 20, 35, { width: 195, align: 'center' });
+    doc.text('TAG-HEUER - ZENITH', 20, 50, { width: 195, align: 'center' });
+    doc.text('CRISTIAN DIOR', 20, 65, { width: 195, align: 'center' });
+
+    doc.text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
+    doc.text('C/SAN CLEMENTE, 8', 20, 105, { width: 195, align: 'center' });
+    doc.text('38003 - SANTA CRUZ DE TENERIFE', 20, 120, { width: 195, align: 'center' });
+    doc.text('922-24.23.85', 20, 135, { width: 195, align: 'center' });
+    doc.text('Santa Cruz de Tenerife', 20, 150, { width: 195, align: 'center' });
+    doc.text('Tenerife', 20, 165, { width: 195, align: 'center' });
+  };
+
+  writeItems = doc => {
+    if (this.state.items.length > 0) {
+      this.state.items.forEach(item => {});
+    }
+  };
+
   generateDocument = doc => {
     doc.font('Courier', 10).text(`Nº Orden: ${this.state.numOrden}`, 490, 20);
 
+    this.writeCompanyInfo(doc);
+    this.writeItems(doc);
+
     doc.rect(20, 200, 570, 75); // Client data box
     doc.fontSize(11).text('Cliente', 25, 207);
-    doc.text(`:  ${this.state.customer.toLocaleUpperCase()}`, 100, 207,{width: 240});
-    doc.text('Dirección', 25,236);
+    doc.text(`:  ${this.state.customer.toLocaleUpperCase()}`, 100, 207, { width: 240 });
+    doc.text('Dirección', 25, 236);
     doc.text(`:  TLF-${this.state.tlfno}`, 100, 236);
     doc.text(`:  DNI ${this.state.dni.toLocaleUpperCase()}`, 100, 248);
     doc.text('Plaza', 25, 262);
-    doc.text(`:  ${this.state.location.toLocaleUpperCase()}`, 100, 262,{width: 240});
+    doc.text(`:  ${this.state.location.toLocaleUpperCase()}`, 100, 262, { width: 240 });
 
     doc.polygon([380, 200], [380, 275]); //Separator
     doc.text('Fecha de entrada', 385, 207);
@@ -84,31 +109,43 @@ class App extends Component {
   };
 
   handleChange = event => {
-    switch(event.target.name){
+    switch (event.target.name) {
       case 'numorder':
-        this.setState({ numOrden: event.target.value });break;
+        this.setState({ numOrden: event.target.value });
+        break;
       case 'customer':
-        this.setState({ customer: event.target.value });break;
+        this.setState({ customer: event.target.value });
+        break;
       case 'tlfno':
-        this.setState({ tlfno: event.target.value });break;
+        this.setState({ tlfno: event.target.value });
+        break;
       case 'dni':
-        this.setState({ dni: event.target.value });break;
+        this.setState({ dni: event.target.value });
+        break;
       case 'location':
-        this.setState({ location: event.target.value });break;
+        this.setState({ location: event.target.value });
+        break;
       case 'moreinfo':
-        this.setState({ moreInfo: event.target.value });break;
+        this.setState({ moreInfo: event.target.value });
+        break;
       case 'entrydate':
-        this.setState({ entryDate: event.target.value });break;
+        this.setState({ entryDate: event.target.value });
+        break;
       case 'budget':
-        this.setState({ budget: event.target.value });break;
+        this.setState({ budget: event.target.value });
+        break;
       case 'model':
-        this.setState({ model: event.target.value });break;
+        this.setState({ model: event.target.value });
+        break;
       case 'box':
-        this.setState({ box: event.target.value });break;
+        this.setState({ box: event.target.value });
+        break;
       case 'control':
-        this.setState({ control: event.target.value });break;
+        this.setState({ control: event.target.value });
+        break;
       case 'delivery':
-        this.setState({ deliveryDate: event.target.value });break;
+        this.setState({ deliveryDate: event.target.value });
+        break;
     }
   };
 
@@ -142,7 +179,14 @@ class App extends Component {
         <input name="box" placeholder="Num caja" onChange={this.handleChange} type="text" />
         <input name="control" placeholder="Num control" onChange={this.handleChange} type="text" />
         <input name="delivery" placeholder="Fecha de entrega" onChange={this.handleChange} type="text" />
-        <textarea placeholder="Observaciones" name="moreinfo" id="moreinfo" cols="30" rows="10" onChange={this.handleChange} />
+        <textarea
+          placeholder="Observaciones"
+          name="moreinfo"
+          id="moreinfo"
+          cols="30"
+          rows="10"
+          onChange={this.handleChange}
+        />
         <button onClick={this.handleClick}>Generate PDF</button>
         {this.downLoadLink()}
       </div>
