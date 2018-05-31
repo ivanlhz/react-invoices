@@ -4,6 +4,7 @@ import './style.scss';
 
 import blobStream from 'blob-stream';
 import PDFDocument from 'pdfkit';
+import InvoiceItem from './components/invoice-item';
 
 class App extends Component {
   state = {
@@ -20,10 +21,11 @@ class App extends Component {
     box: '',
     control: '',
     items: [],
-    pdfUrl: ''
+    pdfUrl: '',
+    shipping: 0.0
   };
 
-  makePDF = target => {
+  makePDF = () => {
     const doc = new PDFDocument({ margin: 10 });
     const stream = doc.pipe(blobStream());
 
@@ -51,17 +53,54 @@ class App extends Component {
     doc.text('Tenerife', 20, 165, { width: 195, align: 'center' });
   };
 
-  writeItems = doc => {
+  writeItems = () => {
+    let list = [];
     if (this.state.items.length > 0) {
-      this.state.items.forEach(item => {});
+      list = [
+        ...this.state.items.map((item, index) => {
+          return <InvoiceItem key={index} id={index} onUpdate={this.onUpdateItem} />;
+        })
+      ];
     }
+    return list;
+  };
+
+  onUpdateItem = value => {
+    const itemList = Object.assign([], [...this.state.items]);
+    itemList[value.id] = value;
+    if (JSON.stringify(this.state.items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
+  };
+
+  pdfWriteItems = doc => {
+    let line = 0;
+    let importe = 0;
+    let igic = 0;
+    let subtotal = 0;
+    let total = 0;
+    this.state.items.forEach(item => {
+      if (item.amount > 0) {
+        doc.fontSize(12).text(parseFloat(item.amount).toFixed(2), 23, 320 + line * 15);
+        doc.text(item.name.toLocaleUpperCase(), 123, 320 + line * 15);
+        doc.text(parseFloat(item.price).toFixed(2), 463, 320 + line * 15, { width: 100, align: 'right' });
+        line += 1;
+        importe += (item.amount * item.price);
+      }
+    });
+    subtotal = parseFloat(importe) + parseFloat(this.state.shipping);
+    igic = parseFloat(importe) * 0.07;
+    total = igic + subtotal;
+   
+    doc.text(parseFloat(importe).toFixed(2), 300, 625, { width: 95, align: 'right' });
+    doc.text(parseFloat(this.state.shipping).toFixed(2), 300, 637, { width: 95, align: 'right' });
+    doc.text(parseFloat(igic).toFixed(2), 300, 649, { width: 95, align: 'right' });
+    doc.text(parseFloat(total).toFixed(2), 300, 672, { width: 95, align: 'right' });
   };
 
   generateDocument = doc => {
     doc.font('Courier', 10).text(`Nº Orden: ${this.state.numOrden}`, 490, 20);
 
     this.writeCompanyInfo(doc);
-    this.writeItems(doc);
+    this.pdfWriteItems(doc);
 
     doc.rect(20, 200, 570, 75); // Client data box
     doc.fontSize(11).text('Cliente', 25, 207);
@@ -146,6 +185,9 @@ class App extends Component {
       case 'delivery':
         this.setState({ deliveryDate: event.target.value });
         break;
+      case 'shipping':
+        this.setState({ shipping: event.target.value });
+        break;
     }
   };
 
@@ -161,6 +203,12 @@ class App extends Component {
         </a>
       );
     }
+  };
+
+  handleAddItem = event => {
+    this.setState({
+      items: [...this.state.items, { amount: 0, name: '', price: 0 }]
+    });
   };
 
   render = () => {
@@ -179,6 +227,14 @@ class App extends Component {
         <input name="box" placeholder="Num caja" onChange={this.handleChange} type="text" />
         <input name="control" placeholder="Num control" onChange={this.handleChange} type="text" />
         <input name="delivery" placeholder="Fecha de entrega" onChange={this.handleChange} type="text" />
+        <input
+          name="shipping"
+          min="0"
+          step="0.25"
+          placeholder="Gastos de envio"
+          onChange={this.handleChange}
+          type="number"
+        />
         <textarea
           placeholder="Observaciones"
           name="moreinfo"
@@ -189,6 +245,10 @@ class App extends Component {
         />
         <button onClick={this.handleClick}>Generate PDF</button>
         {this.downLoadLink()}
+        {this.writeItems()}
+        <div>
+          <button onClick={this.handleAddItem}>+</button>
+        </div>
       </div>
     );
   };
