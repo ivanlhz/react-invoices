@@ -7,3 +7,38 @@
 h1 {
   color: red;
 }
+.form {
+  width: 90%;
+  margin: 15px auto;
+    .columns-2, .columns-3, .full-width {
+      padding-top: 2rem;
+      display: grid;
+      grid-gap: 1rem;
+    }
+    .full-width {
+      grid-template-columns: 1fr;
+    }
+    .columns-2{
+      grid-template-columns: repeat(2, 1fr);
+    }
+   .columns-3{
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .span-2 {
+      grid-column: span 2;
+    }
+    .span-3 {
+      grid-column: span 3;
+    }
+    .form-block{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 1rem;
+    }
+}
+.add{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}

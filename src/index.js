@@ -2,9 +2,19 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import './style.scss';
 
-import blobStream from 'blob-stream';
-import PDFDocument from 'pdfkit';
+import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Icon from '@material-ui/core/Icon';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+
 import InvoiceItem from './components/invoice-item';
+import TopBar from './components/top-bar';
+
+const LVMH_TYPE = 'lvmh';
+const MGI_TYPE = 'mgi';
 
 class App extends Component {
   state = {
@@ -21,36 +31,8 @@ class App extends Component {
     box: '',
     control: '',
     items: [],
-    pdfUrl: '',
+    companyType: LVMH_TYPE,
     shipping: 0.0
-  };
-
-  makePDF = () => {
-    const doc = new PDFDocument({ margin: 10 });
-    const stream = doc.pipe(blobStream());
-
-    this.generateDocument(doc);
-    stream.on('finish', () => {
-      const blob = stream.toBlob('application/pdf');
-      if (this.state.pdfUrl.length > 0) window.URL.revokeObjectURL(this.state.pdfUrl);
-      this.setState({ pdfUrl: window.URL.createObjectURL(blob) });
-    });
-  };
-
-  writeCompanyInfo = doc => {
-    doc.fontSize(10);
-    doc.text('LVMH RELOJERIA Y JOYERIA ESPAÑA', 20, 20, { width: 195, align: 'center' });
-    doc.fontSize(8);
-    doc.text('Servicio Técnico Oficial de Canarias', 20, 35, { width: 195, align: 'center' });
-    doc.text('TAG-HEUER - ZENITH', 20, 50, { width: 195, align: 'center' });
-    doc.text('CRISTIAN DIOR', 20, 65, { width: 195, align: 'center' });
-
-    doc.text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
-    doc.text('C/SAN CLEMENTE, 8', 20, 105, { width: 195, align: 'center' });
-    doc.text('38003 - SANTA CRUZ DE TENERIFE', 20, 120, { width: 195, align: 'center' });
-    doc.text('922-24.23.85', 20, 135, { width: 195, align: 'center' });
-    doc.text('Santa Cruz de Tenerife', 20, 150, { width: 195, align: 'center' });
-    doc.text('Tenerife', 20, 165, { width: 195, align: 'center' });
   };
 
   writeItems = () => {
@@ -83,13 +65,13 @@ class App extends Component {
         doc.text(item.name.toLocaleUpperCase(), 123, 320 + line * 15);
         doc.text(parseFloat(item.price).toFixed(2), 463, 320 + line * 15, { width: 100, align: 'right' });
         line += 1;
-        importe += (item.amount * item.price);
+        importe += item.amount * item.price;
       }
     });
     subtotal = parseFloat(importe) + parseFloat(this.state.shipping);
     igic = parseFloat(importe) * 0.07;
     total = igic + subtotal;
-   
+
     doc.text(parseFloat(importe).toFixed(2), 300, 625, { width: 95, align: 'right' });
     doc.text(parseFloat(this.state.shipping).toFixed(2), 300, 637, { width: 95, align: 'right' });
     doc.text(parseFloat(igic).toFixed(2), 300, 649, { width: 95, align: 'right' });
@@ -98,10 +80,8 @@ class App extends Component {
 
   generateDocument = doc => {
     doc.font('Courier', 10).text(`Nº Orden: ${this.state.numOrden}`, 490, 20);
-
     this.writeCompanyInfo(doc);
     this.pdfWriteItems(doc);
-
     doc.rect(20, 200, 570, 75); // Client data box
     doc.fontSize(11).text('Cliente', 25, 207);
     doc.text(`:  ${this.state.customer.toLocaleUpperCase()}`, 100, 207, { width: 240 });
@@ -147,63 +127,33 @@ class App extends Component {
     doc.end();
   };
 
-  handleChange = event => {
-    switch (event.target.name) {
-      case 'numorder':
-        this.setState({ numOrden: event.target.value });
-        break;
-      case 'customer':
-        this.setState({ customer: event.target.value });
-        break;
-      case 'tlfno':
-        this.setState({ tlfno: event.target.value });
-        break;
-      case 'dni':
-        this.setState({ dni: event.target.value });
-        break;
-      case 'location':
-        this.setState({ location: event.target.value });
-        break;
-      case 'moreinfo':
-        this.setState({ moreInfo: event.target.value });
-        break;
-      case 'entrydate':
-        this.setState({ entryDate: event.target.value });
-        break;
-      case 'budget':
-        this.setState({ budget: event.target.value });
-        break;
-      case 'model':
-        this.setState({ model: event.target.value });
-        break;
-      case 'box':
-        this.setState({ box: event.target.value });
-        break;
-      case 'control':
-        this.setState({ control: event.target.value });
-        break;
-      case 'delivery':
-        this.setState({ deliveryDate: event.target.value });
-        break;
-      case 'shipping':
-        this.setState({ shipping: event.target.value });
-        break;
-    }
+  writeCompanyInfo = doc => {
+    this.state.companyType === LVMH_TYPE ? this.getLvmhInfo(doc) : this.getMgiInfo(doc);
+    doc.fontSize(8).text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
+    doc.text('C/SAN CLEMENTE, 8', 20, 105, { width: 195, align: 'center' });
+    doc.text('38003 - SANTA CRUZ DE TENERIFE', 20, 120, { width: 195, align: 'center' });
+    doc.text('922-24.23.85', 20, 135, { width: 195, align: 'center' });
+    doc.text('Santa Cruz de Tenerife', 20, 150, { width: 195, align: 'center' });
+    doc.text('Tenerife', 20, 165, { width: 195, align: 'center' });
   };
 
-  handleClick = event => {
-    this.makePDF(event.target);
+  getLvmhInfo = doc => {
+    doc.fontSize(10);
+    doc.text('LVMH RELOJERIA Y JOYERIA ESPAÑA', 20, 20, { width: 195, align: 'center' });
+    doc.fontSize(8);
+    doc.text('Servicio Técnico Oficial de Canarias', 20, 35, { width: 195, align: 'center' });
+    doc.text('TAG-HEUER - ZENITH', 20, 50, { width: 195, align: 'center' });
+    doc.text('CRISTIAN DIOR', 20, 65, { width: 195, align: 'center' });
   };
 
-  downLoadLink = () => {
-    if (this.state.pdfUrl) {
-      return (
-        <a href={this.state.pdfUrl} download="generado.pdf">
-          Download
-        </a>
-      );
-    }
+  getMgiInfo = doc => {
+    doc.fontSize(12).text('MGI Luxury Group S.A', 20, 20, { width: 195, align: 'center' });
+    doc.fontSize(10).text('EBEL', 20, 35, { width: 195, align: 'center' });
+    doc.fontSize(6).text('Servicio Técnico Oficial Canarias', 20, 50, { width: 195, align: 'center' });
   };
+
+  handleChange = name => event => this.setState({ [name]: event.target.value });
+  
 
   handleAddItem = event => {
     this.setState({
@@ -214,40 +164,71 @@ class App extends Component {
   render = () => {
     return (
       <div className="root">
-        <h1>Invoice Generator</h1>
-        <p>{this.state.pdfUrl}</p>
-        <input name="numorder" placeholder="Número de orden" onChange={this.handleChange} type="text" />
-        <input name="customer" placeholder="Nombre cliente" onChange={this.handleChange} type="text" />
-        <input name="tlfno" placeholder="Telefono" onChange={this.handleChange} type="text" />
-        <input name="dni" placeholder="Dni" onChange={this.handleChange} type="text" />
-        <input name="location" placeholder="Dirección" onChange={this.handleChange} type="text" />
-        <input name="entrydate" placeholder="Fecha de entrada" onChange={this.handleChange} type="text" />
-        <input name="budget" placeholder="Presupuesto" onChange={this.handleChange} type="text" />
-        <input name="model" placeholder="Modelo" onChange={this.handleChange} type="text" />
-        <input name="box" placeholder="Num caja" onChange={this.handleChange} type="text" />
-        <input name="control" placeholder="Num control" onChange={this.handleChange} type="text" />
-        <input name="delivery" placeholder="Fecha de entrega" onChange={this.handleChange} type="text" />
-        <input
-          name="shipping"
-          min="0"
-          step="0.25"
-          placeholder="Gastos de envio"
-          onChange={this.handleChange}
-          type="number"
-        />
-        <textarea
-          placeholder="Observaciones"
-          name="moreinfo"
-          id="moreinfo"
-          cols="30"
-          rows="10"
-          onChange={this.handleChange}
-        />
-        <button onClick={this.handleClick}>Generate PDF</button>
-        {this.downLoadLink()}
-        {this.writeItems()}
-        <div>
-          <button onClick={this.handleAddItem}>+</button>
+        <TopBar title="Ordenes de Trabajo" getDocument={this.generateDocument} />
+
+        <section className="form">
+          <div className="columns-2">
+            <TextField placeholder="Número de orden" onChange={this.handleChange('numOrden')} type="text" />
+            <div className="company-info">
+              <InputLabel htmlFor="company-type">Servicio Técnico </InputLabel>
+              <Select
+                native
+                value={this.state.companyType}
+                onChange={this.handleChange('companyType')}
+                inputProps={{
+                  id: 'company-type'
+                }}
+              >
+                <option value={LVMH_TYPE}>LVMH</option>
+                <option value={MGI_TYPE}>MGI</option>
+              </Select>
+            </div>
+          </div>
+          <div className="form-item">
+            <div className="columns-3">
+              <TextField placeholder="Nombre cliente" onChange={this.handleChange('customer')} type="text" />
+              <TextField placeholder="Telefono" onChange={this.handleChange('tlfno')} type="text" />
+              <TextField placeholder="Dni" onChange={this.handleChange('dni')} type="text" />
+              <TextField
+                className="span-3"
+                placeholder="Dirección"
+                onChange={this.handleChange('location')}
+                type="text"
+              />
+            </div>
+            <div className="columns-3">
+              <TextField placeholder="Fecha de entrada" onChange={this.handleChange('entryDate')} type="text" />
+              <TextField placeholder="Presupuesto" onChange={this.handleChange('budget')} type="text" />
+              <TextField placeholder="Modelo" onChange={this.handleChange('model')} type="text" />
+              <TextField placeholder="Num caja" onChange={this.handleChange('box')} type="text" />
+              <TextField name="control" placeholder="Num control" onChange={this.handleChange('control')} type="text" />
+            </div>
+          </div>
+          <div className="columns-2">
+            <TextField placeholder="Fecha de entrega" onChange={this.handleChange('deliveryDate')} type="text" />
+            <TextField
+              name="shipping"
+              min="0"
+              step="0.25"
+              placeholder="Gastos de envio"
+              onChange={this.handleChange('shipping')}
+              type="number"
+            />
+          </div>
+          <div className="full-width">
+            <Input
+              multiline={true}
+              placeholder="Observaciones"
+              className="moreinfo"
+              onChange={this.handleChange('moreInfo')}
+            />
+          </div>
+          <div className="full-width">{this.writeItems()}</div>
+        </section>
+        <div className="add">
+          <Button onClick={this.handleAddItem} variant="fab" color="primary" aria-label="add">
+            <AddIcon />
+          </Button>
         </div>
       </div>
     );
