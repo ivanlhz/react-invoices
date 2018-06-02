@@ -6,15 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
-import Icon from '@material-ui/core/Icon';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import InvoiceItem from './components/invoice-item';
 import TopBar from './components/top-bar';
-
-const LVMH_TYPE = 'lvmh';
-const MGI_TYPE = 'mgi';
+import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from './libs/invoicemaker';
 
 class App extends Component {
   state = {
@@ -32,7 +29,7 @@ class App extends Component {
     control: '',
     items: [],
     companyType: LVMH_TYPE,
-    shipping: 0.0
+    shipping: 0.0,
   };
 
   writeItems = () => {
@@ -41,7 +38,7 @@ class App extends Component {
       list = [
         ...this.state.items.map((item, index) => {
           return <InvoiceItem key={index} id={index} onUpdate={this.onUpdateItem} />;
-        })
+        }),
       ];
     }
     return list;
@@ -53,111 +50,20 @@ class App extends Component {
     if (JSON.stringify(this.state.items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
   };
 
-  pdfWriteItems = doc => {
-    let line = 0;
-    let importe = 0;
-    let igic = 0;
-    let subtotal = 0;
-    let total = 0;
-    this.state.items.forEach(item => {
-      if (item.amount > 0) {
-        doc.fontSize(12).text(parseFloat(item.amount).toFixed(2), 23, 320 + line * 15);
-        doc.text(item.name.toLocaleUpperCase(), 123, 320 + line * 15);
-        doc.text(parseFloat(item.price).toFixed(2), 463, 320 + line * 15, { width: 100, align: 'right' });
-        line += 1;
-        importe += item.amount * item.price;
-      }
-    });
-    subtotal = parseFloat(importe) + parseFloat(this.state.shipping);
-    igic = parseFloat(importe) * 0.07;
-    total = igic + subtotal;
-
-    doc.text(parseFloat(importe).toFixed(2), 300, 625, { width: 95, align: 'right' });
-    doc.text(parseFloat(this.state.shipping).toFixed(2), 300, 637, { width: 95, align: 'right' });
-    doc.text(parseFloat(igic).toFixed(2), 300, 649, { width: 95, align: 'right' });
-    doc.text(parseFloat(total).toFixed(2), 300, 672, { width: 95, align: 'right' });
-  };
-
   generateDocument = doc => {
-    doc.font('Courier', 10).text(`Nº Orden: ${this.state.numOrden}`, 490, 20);
-    this.writeCompanyInfo(doc);
-    this.pdfWriteItems(doc);
-    doc.rect(20, 200, 570, 75); // Client data box
-    doc.fontSize(11).text('Cliente', 25, 207);
-    doc.text(`:  ${this.state.customer.toLocaleUpperCase()}`, 100, 207, { width: 240 });
-    doc.text('Dirección', 25, 236);
-    doc.text(`:  TLF-${this.state.tlfno}`, 100, 236);
-    doc.text(`:  DNI ${this.state.dni.toLocaleUpperCase()}`, 100, 248);
-    doc.text('Plaza', 25, 262);
-    doc.text(`:  ${this.state.location.toLocaleUpperCase()}`, 100, 262, { width: 240 });
-
-    doc.polygon([380, 200], [380, 275]); //Separator
-    doc.text('Fecha de entrada', 385, 207);
-    doc.text(`:  ${this.state.entryDate}`, 500, 207);
-    doc.text('Presupuesto', 385, 222);
-    doc.text(`:  ${this.state.budget}`, 500, 222);
-    doc.text('Modelo', 385, 236);
-    doc.text(`:  ${this.state.model}`, 500, 236);
-    doc.text('Nº Caja', 385, 248);
-    doc.text(`:  ${this.state.box}`, 500, 248);
-    doc.text('Nº Control', 385, 262);
-    doc.text(`:  ${this.state.control}`, 500, 262);
-
-    doc.rect(20, 290, 570, 25); //Title
-    doc.fontSize(12).text('DETALLE DE REPARACION - FORNITURA EMPLEADA', 23, 297);
-
-    doc.polygon([20, 620], [590, 620]); // Footer Separator
-    doc.fontSize(11).text('Nº Rep. Consecionario', 20, 625, { width: 195, align: 'left' });
-    doc.polygon([200, 620], [200, 690], [400, 690], [400, 620]); //Footer content
-    doc.text('Importe', 205, 625);
-    doc.text('Gastos de envio', 205, 637);
-    doc.text('I.G.I.C 7%', 205, 649);
-    doc.moveDown();
-    doc.text('TOTAL FACTURA');
-
-    doc.rect(20, 700, 400, 70); //Observaciones
-    doc.text('Observaciones:', 23, 705);
-    doc.text(this.state.moreInfo, 23, 717, { width: 390, align: 'justify' });
-
-    doc.rect(440, 700, 150, 35); //Fecha de entrega
-    doc.text('Fecha de entrega', 443, 703, { width: 140, align: 'center' });
-    doc.text(this.state.deliveryDate, 443, 717, { width: 140, align: 'center' });
-
-    doc.stroke();
-    doc.end();
-  };
-
-  writeCompanyInfo = doc => {
-    this.state.companyType === LVMH_TYPE ? this.getLvmhInfo(doc) : this.getMgiInfo(doc);
-    doc.fontSize(8).text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
-    doc.text('C/SAN CLEMENTE, 8', 20, 105, { width: 195, align: 'center' });
-    doc.text('38003 - SANTA CRUZ DE TENERIFE', 20, 120, { width: 195, align: 'center' });
-    doc.text('922-24.23.85', 20, 135, { width: 195, align: 'center' });
-    doc.text('Santa Cruz de Tenerife', 20, 150, { width: 195, align: 'center' });
-    doc.text('Tenerife', 20, 165, { width: 195, align: 'center' });
-  };
-
-  getLvmhInfo = doc => {
-    doc.fontSize(10);
-    doc.text('LVMH RELOJERIA Y JOYERIA ESPAÑA', 20, 20, { width: 195, align: 'center' });
-    doc.fontSize(8);
-    doc.text('Servicio Técnico Oficial de Canarias', 20, 35, { width: 195, align: 'center' });
-    doc.text('TAG-HEUER - ZENITH', 20, 50, { width: 195, align: 'center' });
-    doc.text('CRISTIAN DIOR', 20, 65, { width: 195, align: 'center' });
-  };
-
-  getMgiInfo = doc => {
-    doc.fontSize(12).text('MGI Luxury Group S.A', 20, 20, { width: 195, align: 'center' });
-    doc.fontSize(10).text('EBEL', 20, 35, { width: 195, align: 'center' });
-    doc.fontSize(6).text('Servicio Técnico Oficial Canarias', 20, 50, { width: 195, align: 'center' });
+    let invoiceMaker = new InvoiceMaker(doc);
+    invoiceMaker.pdfSetCompanyHeader(this.state.companyType);
+    invoiceMaker.pdfSetRjTictacInfo();
+    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping);
+    invoiceMaker.pdfSetDocumentBody(this.state);
+    return invoiceMaker.getDoc();
   };
 
   handleChange = name => event => this.setState({ [name]: event.target.value });
-  
 
   handleAddItem = event => {
     this.setState({
-      items: [...this.state.items, { amount: 0, name: '', price: 0 }]
+      items: [...this.state.items, { amount: 0, name: '', price: 0 }],
     });
   };
 
@@ -176,7 +82,7 @@ class App extends Component {
                 value={this.state.companyType}
                 onChange={this.handleChange('companyType')}
                 inputProps={{
-                  id: 'company-type'
+                  id: 'company-type',
                 }}
               >
                 <option value={LVMH_TYPE}>LVMH</option>
