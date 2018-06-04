@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './main.scss';
-
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
@@ -10,9 +9,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-
 import InvoiceItem from './invoice-item';
 import TopBar from './top-bar';
 import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from '../libs/invoicemaker';
@@ -32,8 +28,11 @@ class MainApp extends Component {
     box: '',
     control: '',
     items: [],
+    nconsecionario: 0,
     companyType: LVMH_TYPE,
     shipping: 0.0,
+    formModel: 1,
+    impRecPubl: '',
   };
 
   writeItems = () => {
@@ -58,18 +57,31 @@ class MainApp extends Component {
     let invoiceMaker = new InvoiceMaker(doc);
     invoiceMaker.pdfSetCompanyHeader(this.state.companyType);
     invoiceMaker.pdfSetRjTictacInfo();
-    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping);
+    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping, this.state.formModel);
     invoiceMaker.pdfSetDocumentBody(this.state);
     return invoiceMaker.getDoc();
   };
 
   handleChange = name => event => this.setState({ [name]: event.target.value });
 
-  handleAddItem = event => {
+  handleAddItem = () => {
     this.setState({
       items: [...this.state.items, { amount: 0, name: '', price: 0 }],
     });
   };
+  onlyModel2 = () => {
+    let element;
+    if (this.state.formModel > 1) {
+      element = (
+        <div className="columns-2">
+          <TextField placeholder="Nº de Consecionario" type="number" onChange={this.handleChange('nconsecionario')} />
+          <TextField placeholder="Imp. Rec. Público: " type="number" onChange={this.handleChange('impRecPubl')} />
+        </div>
+      );
+    }
+    return element;
+  };
+  handleChangeToModel = model => event => this.setState({ formModel: model });
 
   getContent = () => {
     return (
@@ -111,6 +123,7 @@ class MainApp extends Component {
             <TextField name="control" placeholder="Num control" onChange={this.handleChange('control')} type="text" />
           </div>
         </div>
+        {this.onlyModel2()}
         <div className="columns-2">
           <TextField placeholder="Fecha de entrega" onChange={this.handleChange('deliveryDate')} type="text" />
           <TextField
@@ -144,10 +157,18 @@ class MainApp extends Component {
         <div className="root">
           <div className="left-menu">
             <List component="nav">
-              <ListItem button>
+              <ListItem
+                onClick={this.handleChangeToModel(1)}
+                button
+                className={this.state.formModel === 1 ? 'selected' : ''}
+              >
                 <ListItemText primary="Modelo 1" />
               </ListItem>
-              <ListItem button component="a" href="#simple-list">
+              <ListItem
+                button
+                onClick={this.handleChangeToModel(2)}
+                className={this.state.formModel === 2 ? 'selected' : ''}
+              >
                 <ListItemText primary="Modelo 2" />
               </ListItem>
             </List>

@@ -7,6 +7,13 @@
   grid-template-areas: "nav  main" "nav  foot";
 }
 
+nav div.selected {
+  background-color: #434a86;
+  span {
+    color: white;
+  }
+}
+
 .topbar {
   position: fixed;
   width: 100%;
@@ -16,6 +23,8 @@
 .left-menu {
   grid-area: nav;
   border-right: 1px solid #CCC;
+  background-color: cornflowerblue;
+  border-right: 4px solid #434a86;
 }
 
 .content {

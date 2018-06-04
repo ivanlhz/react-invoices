@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectTasksOptions">
+  <component name="ProjectTasksOptions" suppressed-tasks="SCSS">
     <TaskOptions isEnabled="true">
       <option name="arguments" value="--write --list-different --single-quote --print-width=120 --trailing-comma=all $FilePathRelativeToProjectRoot$" />
       <option name="checkSyntaxErrors" value="true" />
