@@ -162,14 +162,14 @@ class MainApp extends Component {
                 button
                 className={this.state.formModel === 1 ? 'selected' : ''}
               >
-                <ListItemText primary="Modelo 1" />
+                <ListItemText primary="Modelo: PVP" />
               </ListItem>
               <ListItem
                 button
                 onClick={this.handleChangeToModel(2)}
                 className={this.state.formModel === 2 ? 'selected' : ''}
               >
-                <ListItemText primary="Modelo 2" />
+                <ListItemText primary="Modelo: Distribuidor" />
               </ListItem>
             </List>
           </div>
