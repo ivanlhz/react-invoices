@@ -9,9 +9,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import InvoiceItem from './invoice-item';
-import TopBar from './top-bar';
-import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from '../libs/invoicemaker';
+import InvoiceItem from '../InvoiceItem';
+import TopBar from '../TopBar';
+import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 
 class MainApp extends Component {
   state = {
@@ -162,14 +162,14 @@ class MainApp extends Component {
                 button
                 className={this.state.formModel === 1 ? 'selected' : ''}
               >
-                <ListItemText primary="Modelo: PVP" />
+                <ListItemText primary="PVP" />
               </ListItem>
               <ListItem
                 button
                 onClick={this.handleChangeToModel(2)}
                 className={this.state.formModel === 2 ? 'selected' : ''}
               >
-                <ListItemText primary="Modelo: Distribuidor" />
+                <ListItemText primary="Distribuidor" />
               </ListItem>
             </List>
           </div>

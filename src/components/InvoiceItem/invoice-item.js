@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/TextField';
 import './invoice-item.scss'
 
 import InputAdornment from '@material-ui/core/InputAdornment';

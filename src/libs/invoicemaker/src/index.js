@@ -72,7 +72,6 @@ class InvoiceMaker {
   pdfSetItems = (items, shipping, formModel) => {
     this.calculatePositions(formModel);
     let footerContentX = this.footerContentX;
-    console.log(`EN ITEMS ${footerContentX}`);
     let line = 0;
     let importe = 0;
     //this._doc.font('Courier', 10);
@@ -115,13 +114,11 @@ class InvoiceMaker {
   };
 
   pdfSetDocumentBody = params => {
-    //this.calculatePositions(params.formModel);
-    let rectWidth = this.rectWidth;
-    let separatorX = this.separatorX;
-    let morinfoWidth = this.morinfoWidth;
-    let footerContentX = this.footerContentX;
-    let footerContentWidth = this.footerContentWidth;
-    console.log(`EN BODY ${footerContentX}`);
+    const rectWidth = this.rectWidth;
+    const separatorX = this.separatorX;
+    const morinfoWidth = this.morinfoWidth;
+    const footerContentX = this.footerContentX;
+    const footerContentWidth = this.footerContentWidth;
 
     this._doc.fontSize(10).text(`Nº Orden: ${params.numOrden}`, 490, 20);
     this._doc.fontSize(11).text('Cliente', 25, 207);
@@ -140,10 +137,9 @@ class InvoiceMaker {
     this._doc.text(`:  ${params.location.toLocaleUpperCase()}`, 100, 262, {
       width: 240,
     });
-    console.log(rectWidth);
-    this._doc.rect(20, 200, rectWidth, 75); // Client data box
-    this._doc.polygon([separatorX, 200], [separatorX, 275]); //Separator
-
+   
+    this._doc.rect(20, 200, rectWidth/2, 75); // Client data box
+    this._doc.rect(rectWidth/2 + 20, 200, rectWidth/2, 75); // Client data box
     this._doc.text('Fecha de entrada', separatorX + 5, 207);
     this._doc.text(`:  ${params.entryDate}`, separatorX + 105, 207);
     this._doc.text('Presupuesto', separatorX + 5, 222);
@@ -158,6 +154,14 @@ class InvoiceMaker {
     if (params.formModel === 1) {
       this._doc.rect(20, 290, 570, 25); //Title
       this._doc.fontSize(12).text('DETALLE DE REPARACION - FORNITURA EMPLEADA', 23, 297);
+      this._doc.polygon(
+        [footerContentX, 620],
+        [footerContentX, 690],
+        [footerContentX + footerContentWidth, 690],
+        [footerContentX + footerContentWidth, 620],
+        [20, 620],
+        [590, 620]
+      );
     } else {
       this._doc.rect(20, 290, 470, 25); //Title
       this._doc.fontSize(12).text('DETALLE DE REPARACION - FORNITURA EMPLEADA', 23, 297);
@@ -166,17 +170,20 @@ class InvoiceMaker {
       this._doc.fontSize(11).text(params.nconsecionario, 20, 637, { width: 100, align: 'center' });
       this._doc.rect(180, 620, 200, 25); // impRecPubl
       this._doc.fontSize(10).text('Imp. Rec. Público:', 185, 627, { width: 100, align: 'left' });
-      this._doc.fontSize(10).text(params.impRecPubl, 185, 627, { width: 100, align: 'left' });
+      this._doc.fontSize(10).text(params.impRecPubl, 270, 627, { width: 100, align: 'left' });
+      this._doc.polygon(
+        [footerContentX, 620],
+        [footerContentX, 690],
+        [footerContentX + footerContentWidth, 690],
+        [footerContentX + footerContentWidth, 620],
+        [20, 620],
+        [590, 620]
+      );
     }
 
-    this._doc.polygon([20, 620], [590, 620]); // Footer Separator
+   // Footer Separator
     this._doc.fontSize(11).text('Nº Rep. Consecionario', 20, 625, { width: 195, align: 'left' });
-    this._doc.polygon(
-      [footerContentX, 620],
-      [footerContentX, 690],
-      [footerContentX + footerContentWidth, 690],
-      [footerContentX + footerContentWidth, 620],
-    ); //Footer content
+   //Footer content
     this._doc.text('Importe', footerContentX + 5, 625);
     this._doc.text('Gastos de envio', footerContentX + 5, 637);
     this._doc.text('I.G.I.C 7%', footerContentX + 5, 649);

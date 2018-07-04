@@ -5,7 +5,7 @@
   "author": "ivanlhz",
   "license": "MIT",
   "scripts": {
-    "start:dev": "webpack-dev-server --hot --mode development --config config/webpack.base.conf.js",
+    "start": "webpack-dev-server --hot --mode development --config config/webpack.base.conf.js",
     "build": "webpack  --mode production --config config/webpack.prod.config.js --env.NODE_ENV=production --progress"
   },
   "dependencies": {
