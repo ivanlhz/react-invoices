@@ -1,3 +1,5 @@
+import { TYPE_RESELLER, TYPE_PVP } from "../../../constats/form-types";
+
 const LVMH_TYPE = 'lvmh';
 const MGI_TYPE = 'mgi';
 
@@ -14,8 +16,8 @@ class InvoiceMaker {
 
   getDoc = () => this._doc;
 
-  calculatePositions = formType => {
-    if (formType === 2) {
+  calculatePositions = (formType) => {
+    if (formType.indexOf(TYPE_RESELLER) !== -1) {
       this.rectWidth -= 100;
       this.separatorX -= 100;
       this.morinfoWidth -= 100;
@@ -113,7 +115,7 @@ class InvoiceMaker {
     });
   };
 
-  pdfSetDocumentBody = params => {
+  pdfSetDocumentBody = (params) => {
     const rectWidth = this.rectWidth;
     const separatorX = this.separatorX;
     const morinfoWidth = this.morinfoWidth;
@@ -151,7 +153,7 @@ class InvoiceMaker {
     this._doc.text('Nº Control', separatorX + 5, 262);
     this._doc.text(`:  ${params.control}`, separatorX + 105, 262);
 
-    if (params.formModel === 1) {
+    if (params.formType.indexOf(TYPE_PVP) !== -1) {
       this._doc.rect(20, 290, 570, 25); //Title
       this._doc.fontSize(12).text('DETALLE DE REPARACION - FORNITURA EMPLEADA', 23, 297);
       this._doc.polygon(

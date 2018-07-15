@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InvoiceItem from '../InvoiceItem';
 import TopBar from '../TopBar';
 import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
+import {TYPE_PVP, TYPE_RESELLER} from '../../constats/form-types'
 
 class MainApp extends Component {
   state = {
@@ -31,7 +32,7 @@ class MainApp extends Component {
     nconsecionario: 0,
     companyType: LVMH_TYPE,
     shipping: 0.0,
-    formModel: 1,
+    formType: TYPE_PVP,
     impRecPubl: '',
   };
 
@@ -47,31 +48,32 @@ class MainApp extends Component {
     return list;
   };
 
-  onUpdateItem = value => {
+  onUpdateItem = (value) => {
     const itemList = Object.assign([], [...this.state.items]);
     itemList[value.id] = value;
     if (JSON.stringify(this.state.items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
   };
 
-  generateDocument = doc => {
+  generateDocument = (doc) => {
     let invoiceMaker = new InvoiceMaker(doc);
     invoiceMaker.pdfSetCompanyHeader(this.state.companyType);
     invoiceMaker.pdfSetRjTictacInfo();
-    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping, this.state.formModel);
+    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping, this.state.formType);
     invoiceMaker.pdfSetDocumentBody(this.state);
     return invoiceMaker.getDoc();
   };
 
-  handleChange = name => event => this.setState({ [name]: event.target.value });
+  handleChange = (name) => (event) => this.setState({ [name]: event.target.value });
 
   handleAddItem = () => {
     this.setState({
       items: [...this.state.items, { amount: 0, name: '', price: 0 }],
     });
   };
+  
   onlyModel2 = () => {
     let element;
-    if (this.state.formModel > 1) {
+    if (this.state.formType.indexOf(TYPE_PVP) !== -1) {
       element = (
         <div className="columns-2">
           <TextField placeholder="Nº de Consecionario" type="number" onChange={this.handleChange('nconsecionario')} />
@@ -81,8 +83,9 @@ class MainApp extends Component {
     }
     return element;
   };
-  handleChangeToModel = model => event => this.setState({ formModel: model });
 
+  handleChangeToModel = (model) => (event) => this.setState({ formType: model });
+  
   getContent = () => {
     return (
       <div>
@@ -151,23 +154,21 @@ class MainApp extends Component {
   render = () => {
     return (
       <div>
-        <div className="topbar">
-          <TopBar title="Ordenes de Trabajo" getDocument={this.generateDocument} />
-        </div>
-        <div className="root">
+        <TopBar title="Ordenes de Trabajo" getDocument={this.generateDocument} />
+        <div className="layout">
           <div className="left-menu">
             <List component="nav">
               <ListItem
-                onClick={this.handleChangeToModel(1)}
+                onClick={this.handleChangeToModel(TYPE_PVP)}
                 button
-                className={this.state.formModel === 1 ? 'selected' : ''}
+                className={this.state.formType.indexOf(TYPE_PVP) !== -1 ? 'selected' : ''}
               >
                 <ListItemText primary="PVP" />
               </ListItem>
               <ListItem
                 button
-                onClick={this.handleChangeToModel(2)}
-                className={this.state.formModel === 2 ? 'selected' : ''}
+                onClick={this.handleChangeToModel(TYPE_RESELLER)}
+                className={this.state.formType.indexOf(TYPE_RESELLER) !== -1 ? 'selected' : ''}
               >
                 <ListItemText primary="Distribuidor" />
               </ListItem>
