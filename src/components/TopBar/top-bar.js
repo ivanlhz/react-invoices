@@ -1,78 +1,46 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-
 import blobStream from 'blob-stream';
 import PDFDocument from 'pdfkit';
+import {saveAs} from 'file-saver';
+import './styles.scss';
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
-  flex: {
-    flex: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-};
 
 class TopBar extends Component {
-  state = {
-    pdfUrl: '',
-  };
 
-  classes = this.props.classes;
-  title = this.props.title;
-  getDocument = this.props.getDocument;
-
-  handleCreatePdf = () => {
+  handleCreatePdf = (e) => {
+    e.preventDefault();
     let doc = new PDFDocument({ margin: 10 });
-    doc = this.getDocument(doc);
+    doc = this.props.getDocument(doc);
     const stream = doc.pipe(blobStream());
 
     stream.on('finish', () => {
       const blob = stream.toBlob('application/pdf');
-      if (this.state.pdfUrl.length > 0) window.URL.revokeObjectURL(this.state.pdfUrl);
-      const docUrl = window.URL.createObjectURL(blob);
-      this.setState({ pdfUrl: docUrl });
+      saveAs(blob, `invoice`);
     });
   };
 
-  downLoadLink = () => {
-    if (this.state.pdfUrl) {
-      return (
-        <Button href={this.state.pdfUrl} download="generado.pdf">
-          Download
-        </Button>
-      );
-    }
-  };
-
-  render = () => (
-    <div className={this.classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="title" color="inherit" className={this.classes.flex}>
-            {this.title}
-          </Typography>
-          <Button color="inherit" onClick={this.handleCreatePdf}>
-            Crear PDF
-          </Button>
-          {this.downLoadLink()}
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+  render = () => {
+  const {title} = this.props;
+  return (<div className="header-bar">
+        <h1>{title}</h1>
+        <div className="header-bar-right">
+          <ul>
+            <li>
+              <a href="#" onClick={this.handleCreatePdf}>
+                Crear PDF
+              </a>
+            </li>
+          </ul>     
+        </div>
+      </div>
+    );
+  }
 }
-
 TopBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  getDocument: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(TopBar);
+
+export default TopBar;
