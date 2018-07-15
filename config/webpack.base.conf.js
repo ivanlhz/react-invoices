@@ -11,9 +11,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
+        loader: 'babel-loader',
       },
       {
         test: /\.scss$/,
@@ -24,7 +22,7 @@ module.exports = {
       },
       {
         test: /node_modules\/(pdfkit|brotli|fontkit|linebreak|png-js|unicode-properties)/,
-        use: { loader: 'transform-loader?brfs' },
+        loader: 'transform-loader?brfs',
       },
     ],
   },

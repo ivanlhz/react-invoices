@@ -28,7 +28,7 @@ class TopBar extends Component {
           <ul>
             <li>
               <a href="#" onClick={this.handleCreatePdf}>
-                Generar Orden de Trabajo
+                Generar
               </a>
             </li>
           </ul>     
