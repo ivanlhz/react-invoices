@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import blobStream from 'blob-stream';
 import PDFDocument from 'pdfkit';
-import {saveAs} from 'file-saver';
+import { saveAs } from 'file-saver';
 import './styles.scss';
 
 
@@ -28,7 +28,7 @@ class TopBar extends Component {
           <ul>
             <li>
               <a href="#" onClick={this.handleCreatePdf}>
-                Crear PDF
+                Generar Orden de Trabajo
               </a>
             </li>
           </ul>     

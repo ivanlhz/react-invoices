@@ -1,8 +1,5 @@
 import React from 'react';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import TextField from '@material-ui/core/TextField';
+import { Select, InputLabel, TextField, Input } from '@material-ui/core';
 import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
 

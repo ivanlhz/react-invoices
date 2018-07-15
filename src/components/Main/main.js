@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import './main.scss';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import {Button, List, ListItem, ListItemText} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import InvoiceItem from '../InvoiceItem';
 import TopBar from '../TopBar';
-import { InvoiceMaker, MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
+import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
 import {TYPE_PVP, TYPE_RESELLER} from '../../constats/form-types';
 import FormContent from '../FormContent';
+import './main.scss';
 
 class MainApp extends Component {
   state = {
