@@ -2,8 +2,9 @@ import React from 'react';
 import { Select, InputLabel, TextField, Input } from '@material-ui/core';
 import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
+import {string, func} from 'prop-types';
 
-export default ({handleChange, writeItems, companyType, formType}) => {
+const FormContent = ({handleChange, writeItems, companyType, formType}) => {
   const onlyModel2 = () => {
     let element;
     if (formType.indexOf(TYPE_PVP) !== -1) {
@@ -74,3 +75,12 @@ export default ({handleChange, writeItems, companyType, formType}) => {
   </div>
   );
 };
+
+FormContent.prototypes = {
+  handleChange: func.isRequired, 
+  writeItems: func.isRequired,
+  companyType: string.isRequired,
+  formType: string.isRequired
+}
+
+export default FormContent;

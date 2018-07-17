@@ -4,6 +4,7 @@ import './invoice-item.scss'
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
 
 class InvoiceItem extends Component {
   state = {
@@ -13,7 +14,7 @@ class InvoiceItem extends Component {
     price: 0.0
   };
 
-  handleChange = event => {
+  handleChange = (event) => {
     switch (event.target.name) {
       case 'amount':
         this.setState({ amount: event.target.value });
@@ -54,6 +55,8 @@ class InvoiceItem extends Component {
   }
 }
 
-InvoiceItem.propTypes = {};
+InvoiceItem.propTypes = {
+  id:PropTypes.number.isRequired
+};
 
 export default InvoiceItem;

@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
 import {Button, List, ListItem, ListItemText} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import InvoiceItem from '../InvoiceItem';
-import TopBar from '../TopBar';
+
 import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
 import {TYPE_PVP, TYPE_RESELLER} from '../../constats/form-types';
-import FormContent from '../FormContent';
 import './main.scss';
+import Loadable from 'react-loadable';
+
+
+const Loading = () => <div>Loading...</div>;
+ 
+const TopBar = Loadable({
+  loader: () => import('../TopBar'), // oh no!
+  loading: Loading,
+});
+
+const InvoiceItem = Loadable({
+  loader: () => import('../InvoiceItem'), // oh no!
+  loading: Loading,
+});
+
+const FormContent = Loadable({
+  loader: () => import('../FormContent'), // oh no!
+  loading: Loading,
+});
 
 class MainApp extends Component {
   state = {
@@ -57,14 +74,14 @@ class MainApp extends Component {
     return invoiceMaker.getDoc();
   };
 
-  handleChange = (name) => (event) => this.setState({ [name]: event.target.value });
-
   handleAddItem = () => {
     this.setState({
       items: [...this.state.items, { amount: 0, name: '', price: 0 }],
     });
   };
 
+  handleChange = (name) => (event) => this.setState({ [name]: event.target.value });
+  
   handleChangeToModel = (model) => (event) => this.setState({ formType: model });
 
   render = () => {
