@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import blobStream from 'blob-stream';
-import PDFDocument from 'pdfkit';
+//import PDFDocument from 'pdfkit';
 import { saveAs } from 'file-saver';
 import './styles.scss';
 
@@ -10,13 +10,16 @@ class TopBar extends Component {
 
   handleCreatePdf = (e) => {
     e.preventDefault();
-    let doc = new PDFDocument({ margin: 10 });
-    doc = this.props.getDocument(doc);
-    const stream = doc.pipe(blobStream());
-
-    stream.on('finish', () => {
-      const blob = stream.toBlob('application/pdf');
-      saveAs(blob, `invoice`);
+    import('pdfkit'/* webpackChunkName: pdfkit */).then((pdfkit) => {
+      const PDFDocument = pdfkit.default;
+      let doc = new PDFDocument({ margin: 10 });
+      doc = this.props.getDocument(doc);
+      const stream = doc.pipe(blobStream());
+  
+      stream.on('finish', () => {
+        const blob = stream.toBlob('application/pdf');
+        saveAs(blob, `invoice`);
+      });
     });
   };
 

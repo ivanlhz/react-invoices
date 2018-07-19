@@ -4,24 +4,24 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
 import {TYPE_PVP, TYPE_RESELLER} from '../../constats/form-types';
+import TopBar from '../TopBar';
+import InvoiceItem from '../InvoiceItem';
 import './main.scss';
 import Loadable from 'react-loadable';
-
-
 const Loading = () => <div>Loading...</div>;
  
-const TopBar = Loadable({
-  loader: () => import('../TopBar'), // oh no!
-  loading: Loading,
-});
+// const TopBar = Loadable({
+//   loader: () => import('../TopBar'), // oh no!
+//   loading: Loading,
+// });
 
-const InvoiceItem = Loadable({
-  loader: () => import('../InvoiceItem'), // oh no!
-  loading: Loading,
-});
+// const InvoiceItem = Loadable({
+//   loader: () => import('../InvoiceItem'), // oh no!
+//   loading: Loading,
+// });
 
 const FormContent = Loadable({
-  loader: () => import('../FormContent'), // oh no!
+  loader: () => import('../FormContent'/* webpackChunkName: form-content */), // oh no!
   loading: Loading,
 });
 
