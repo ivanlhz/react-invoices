@@ -3,6 +3,7 @@ import { Select, InputLabel, TextField, Input } from '@material-ui/core';
 import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
 import {string, func} from 'prop-types';
+import './styles.scss';
 
 const FormContent = ({handleChange, writeItems, companyType, formType}) => {
   const onlyModel2 = () => {
