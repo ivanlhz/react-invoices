@@ -126,7 +126,7 @@ class InvoiceMaker {
       width: 240,
     });
     this.document.text('Dirección', 25, 236);
-    if (params.formModel === 1) {
+    if (params.formType.indexOf(TYPE_PVP) !== -1) {
       this.document.text(`:  TLF-${params.tlfno}`, 100, 236);
       this.document.text(`:  DNI ${params.dni.toLocaleUpperCase()}`, 100, 248);
     } else {
@@ -135,7 +135,7 @@ class InvoiceMaker {
     }
     this.document.text('Plaza', 25, 262);
     this.document.text(`:  ${params.location.toLocaleUpperCase()}`, 100, 262, {
-      width: 240,
+      width: params.formType.indexOf(TYPE_PVP) !== -1 ? 220 : 170,
     });
 
     this.document.rect(20, 200, width / 2, 75); // Client data box
