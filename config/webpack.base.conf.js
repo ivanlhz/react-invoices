@@ -1,5 +1,5 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   devServer: {
@@ -9,12 +9,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-      },
-      {
-        test: /\.scss$/,
+        test: /\.(css|scss)$/,
         use: ExtractTextWebpackPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader!sass-loader',
@@ -23,6 +18,11 @@ module.exports = {
       {
         test: /node_modules\/(pdfkit|brotli|fontkit|linebreak|png-js|unicode-properties)/,
         loader: 'transform-loader?brfs',
+      },
+      {
+        test: /.jsx?$/,
+        exclude: /node_modules/,
+        use: ['babel-loader', 'eslint-loader'],
       },
     ],
   },

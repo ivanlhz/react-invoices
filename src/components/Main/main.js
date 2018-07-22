@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {Button, List, ListItem, ListItemText} from '@material-ui/core';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
-import {TYPE_PVP, TYPE_RESELLER} from '../../constats/form-types';
+import { TYPE_PVP, TYPE_RESELLER } from '../../constats/form-types';
 import TopBar from '../TopBar';
 import InvoiceItem from '../InvoiceItem';
 import FormContent from '../FormContent';
@@ -31,44 +31,52 @@ class MainApp extends Component {
     impRecPubl: '',
   };
 
+  onUpdateItem = (value) => {
+    const { items } = this.state;
+    const itemList = Object.assign([], [...items]);
+    itemList[value.id] = value;
+    if (JSON.stringify(items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
+  };
+
   writeItems = () => {
+    const { items } = this.state;
     let list = [];
-    if (this.state.items.length > 0) {
+    if (items.length > 0) {
       list = [
-        ...this.state.items.map((item, index) => {
-          return <InvoiceItem key={index} id={index} onUpdate={this.onUpdateItem} />;
-        }),
+        ...items.map(item => <InvoiceItem key={item.id} onUpdate={this.onUpdateItem} />),
       ];
     }
     return list;
   };
 
-  onUpdateItem = (value) => {
-    const itemList = Object.assign([], [...this.state.items]);
-    itemList[value.id] = value;
-    if (JSON.stringify(this.state.items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
-  };
-
   generateDocument = (doc) => {
-    let invoiceMaker = new InvoiceMaker(doc);
-    invoiceMaker.pdfSetCompanyHeader(this.state.companyType);
+    const {
+      companyType, shipping, items, formType,
+    } = this.state;
+    const invoiceMaker = new InvoiceMaker(doc);
+    invoiceMaker.pdfSetCompanyHeader(companyType);
     invoiceMaker.pdfSetRjTictacInfo();
-    invoiceMaker.pdfSetItems(this.state.items, this.state.shipping, this.state.formType);
+    invoiceMaker.pdfSetItems(items, shipping, formType);
     invoiceMaker.pdfSetDocumentBody(this.state);
     return invoiceMaker.getDoc();
   };
 
   handleAddItem = () => {
+    const { items } = this.state;
+    const newItem = {
+      id: items.length + 1, amount: 0, name: '', price: 0,
+    };
     this.setState({
-      items: [...this.state.items, { amount: 0, name: '', price: 0 }],
+      items: [...items, newItem],
     });
   };
 
-  handleChange = (name) => (event) => this.setState({ [name]: event.target.value });
-  
-  handleChangeToModel = (model) => (event) => this.setState({ formType: model });
+  handleChange = name => event => this.setState({ [name]: event.target.value });
+
+  handleChangeToModel = model => () => this.setState({ formType: model });
 
   render = () => {
+    const { formType, companyType } = this.state;
     return (
       <div className="layout">
         <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} />
@@ -78,32 +86,32 @@ class MainApp extends Component {
               <ListItem
                 onClick={this.handleChangeToModel(TYPE_PVP)}
                 button
-                className={this.state.formType.indexOf(TYPE_PVP) !== -1 ? 'selected' : ''}
+                className={formType.indexOf(TYPE_PVP) !== -1 ? 'selected' : ''}
               >
                 <ListItemText primary="PVP" />
               </ListItem>
               <ListItem
                 button
                 onClick={this.handleChangeToModel(TYPE_RESELLER)}
-                className={this.state.formType.indexOf(TYPE_RESELLER) !== -1 ? 'selected' : ''}
+                className={formType.indexOf(TYPE_RESELLER) !== -1 ? 'selected' : ''}
               >
                 <ListItemText primary="Distribuidor" />
               </ListItem>
             </List>
           </div>
           <div className="content">
-            <FormContent 
-              handleChange = {this.handleChange} 
-              writeItems = {this.writeItems} 
-              companyType = {this.state.companyType} 
-              formType = {this.state.formType}
+            <FormContent
+              handleChange={this.handleChange}
+              writeItems={this.writeItems}
+              companyType={companyType}
+              formType={formType}
             />
           </div>
         </div>
         <div className="add">
-          <Button onClick={this.handleAddItem} variant="fab" color="primary" aria-label="add">
+          <button type="button" onClick={this.handleAddItem}>
             <AddIcon />
-          </Button>
+          </button>
         </div>
       </div>
     );

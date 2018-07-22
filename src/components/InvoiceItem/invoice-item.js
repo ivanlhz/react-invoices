@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
-import './invoice-item.scss'
+import './invoice-item.scss';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Paper from '@material-ui/core/Paper';
@@ -8,10 +8,14 @@ import PropTypes from 'prop-types';
 
 class InvoiceItem extends Component {
   state = {
-    id: this.props.id,
     amount: 1,
     name: '',
-    price: 0.0
+    price: 0.0,
+  };
+
+  componentDidUpdate = () => {
+    const { onUpdate } = this.props;
+    onUpdate(this.state);
   };
 
   handleChange = (event) => {
@@ -25,29 +29,32 @@ class InvoiceItem extends Component {
       case 'price':
         this.setState({ price: event.target.value });
         break;
+      default: break;
     }
   };
 
-  componentDidUpdate = (prevPorps, prevState, snapshot) => {
-    this.props.onUpdate(this.state);
-  };
-
   render() {
+    const { price, amount, name } = this.state;
+    const endAdornment = (
+      <InputAdornment position="end">
+      €
+      </InputAdornment>
+    );
     return (
       <Paper className="paper" elevation={4}>
-        <TextField placeholder="Cantidad" name="amount" min="1" value={this.state.amount} type="number" onChange={this.handleChange} />
-        <TextField placeholder="Nombre" name="name" value={this.state.name} type="text" onChange={this.handleChange} />
+        <TextField placeholder="Cantidad" name="amount" min="1" value={amount} type="number" onChange={this.handleChange} />
+        <TextField placeholder="Nombre" name="name" value={name} type="text" onChange={this.handleChange} />
         <TextField
-        className="text-right"
-        placeholder="Precio"
+          className="text-right"
+          placeholder="Precio"
           name="price"
-          value={this.state.price}
+          value={price}
           type="number"
           min="0"
           step="0.25"
           onChange={this.handleChange}
           InputProps={{
-            endAdornment: <InputAdornment position="end">€</InputAdornment>,
+            endAdornment,
           }}
         />
       </Paper>
@@ -56,7 +63,7 @@ class InvoiceItem extends Component {
 }
 
 InvoiceItem.propTypes = {
-  id:PropTypes.number.isRequired
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default InvoiceItem;
