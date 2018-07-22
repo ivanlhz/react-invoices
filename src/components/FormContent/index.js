@@ -1,3 +1,3 @@
-import formContent from './form-content.jsx';
+import formContent from './form-content';
 
 export default formContent;

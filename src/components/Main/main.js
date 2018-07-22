@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 
 import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP, TYPE_RESELLER } from '../../constats/form-types';
@@ -34,6 +33,7 @@ class MainApp extends Component {
   onUpdateItem = (value) => {
     const { items } = this.state;
     const itemList = Object.assign([], [...items]);
+
     itemList[value.id] = value;
     if (JSON.stringify(items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
   };
@@ -41,9 +41,15 @@ class MainApp extends Component {
   writeItems = () => {
     const { items } = this.state;
     let list = [];
+
     if (items.length > 0) {
       list = [
-        ...items.map(item => <InvoiceItem key={item.id} onUpdate={this.onUpdateItem} />),
+        ...items.map(item => (
+          <InvoiceItem
+            key={item.id}
+            id={item.id}
+            onUpdate={this.onUpdateItem}
+          />)),
       ];
     }
     return list;
@@ -64,7 +70,7 @@ class MainApp extends Component {
   handleAddItem = () => {
     const { items } = this.state;
     const newItem = {
-      id: items.length + 1, amount: 0, name: '', price: 0,
+      id: items.length, amount: 0, name: '', price: 0,
     };
     this.setState({
       items: [...items, newItem],
@@ -110,7 +116,7 @@ class MainApp extends Component {
         </div>
         <div className="add">
           <button type="button" onClick={this.handleAddItem}>
-            <AddIcon />
+            +
           </button>
         </div>
       </div>

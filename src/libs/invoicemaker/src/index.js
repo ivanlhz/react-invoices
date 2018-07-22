@@ -1,4 +1,4 @@
-import { TYPE_RESELLER, TYPE_PVP } from "../../../constats/form-types";
+import { TYPE_RESELLER, TYPE_PVP } from '../../../constats/form-types';
 
 const LVMH_TYPE = 'lvmh';
 const MGI_TYPE = 'mgi';
@@ -72,6 +72,7 @@ class InvoiceMaker {
   };
 
   pdfSetItems = (items, shipping, formModel) => {
+    console.log(items);
     this.calculatePositions(formModel);
     let footerContentX = this.footerContentX;
     let line = 0;

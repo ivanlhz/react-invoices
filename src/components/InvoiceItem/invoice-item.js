@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 
 class InvoiceItem extends Component {
   state = {
+    id: this.props.id,
     amount: 1,
     name: '',
     price: 0.0,
@@ -63,6 +64,7 @@ class InvoiceItem extends Component {
 }
 
 InvoiceItem.propTypes = {
+  id: PropTypes.number.isRequired,
   onUpdate: PropTypes.func.isRequired,
 };
 

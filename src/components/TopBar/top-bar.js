@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import blobStream from 'blob-stream';
 import { saveAs } from 'file-saver';
+import PDFDocument from 'pdfkit';
 import './styles.scss';
 
 
@@ -9,15 +10,12 @@ class TopBar extends Component {
   handleCreatePdf = (e) => {
     e.preventDefault();
     const { getDocument } = this.props;
-    import('pdfkit'/* webpackChunkName: pdfkit */).then((pdfkit) => {
-      const PDFDocument = pdfkit.default;
-      let doc = new PDFDocument({ margin: 10 });
-      doc = getDocument(doc);
-      const stream = doc.pipe(blobStream());
-      stream.on('finish', () => {
-        const blob = stream.toBlob('application/pdf');
-        saveAs(blob, 'invoice');
-      });
+    let doc = new PDFDocument({ margin: 10 });
+    doc = getDocument(doc);
+    const stream = doc.pipe(blobStream());
+    stream.on('finish', () => {
+      const blob = stream.toBlob('application/pdf');
+      saveAs(blob, 'invoice');
     });
   };
 
@@ -31,9 +29,9 @@ class TopBar extends Component {
         <div className="header-bar-right">
           <ul>
             <li>
-              <buton onClick={this.handleCreatePdf}>
+              <button type="button" onClick={this.handleCreatePdf}>
                 Generar
-              </buton>
+              </button>
             </li>
           </ul>
         </div>
