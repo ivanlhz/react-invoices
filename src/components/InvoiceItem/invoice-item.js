@@ -8,14 +8,15 @@ import PropTypes from 'prop-types';
 
 class InvoiceItem extends Component {
   state = {
-    id: this.props.id,
+    id: 0,
     amount: 1,
     name: '',
     price: 0.0,
   };
 
   componentDidUpdate = () => {
-    const { onUpdate } = this.props;
+    const { onUpdate, id } = this.props;
+    this.state.id = id;
     onUpdate(this.state);
   };
 

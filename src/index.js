@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import './style.scss';
-import MainApp from './components/main';
+import MainApp from './components/Main';
 
 const App = () => <MainApp />;
 
