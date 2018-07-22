@@ -1,62 +1,35 @@
 .layout {
   display: grid;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-  grid-template-columns: 150px 1fr;
-  overflow: hidden;
-}
-
-nav div.selected {
-  background-color: #434a86;
-  span {
-    color: white;
-  }
-}
-
-.left-menu {
-  background-color: cornflowerblue;
-}
-
-.content {
-  border-top: 4px solid #434a86;
-  border-left: 4px solid #434a86;
-  display: inline-block;
-  overflow-y: auto;
-  padding: 15px;
-}
-
-.columns-2,
-.columns-3,
-.full-width {
-  padding-top: 2rem;
-  display: grid;
-  grid-gap: 1rem;
-}
-
-.full-width {
   grid-template-columns: 1fr;
-}
-
-.columns-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.columns-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.span-2 {
-  grid-column: span 2;
-}
-
-.span-3 {
-  grid-column: span 3;
-}
-
-.form-block {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  .topbar {
+    width: 100%;
+    background-color: cornflowerblue;
+  }
+  .main {
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    .content {
+      border-top: 4px solid #434a86;
+      border-left: 4px solid #434a86;
+      display: inline-block;
+      overflow-y: auto;
+      padding: 15px;
+    }
+    .left-menu {
+      background-color: cornflowerblue;
+      nav div.selected {
+        background-color: #434a86;
+        span {
+          color: white;
+        }
+      }
+    }
+  }
 }
 
 .add {

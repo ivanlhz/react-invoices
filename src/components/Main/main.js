@@ -70,9 +70,9 @@ class MainApp extends Component {
 
   render = () => {
     return (
-      <div>
-        <TopBar title="Ordenes de Trabajo" getDocument={this.generateDocument} />
-        <div className="layout">
+      <div className="layout">
+        <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} />
+        <div className="main">
           <div className="left-menu">
             <List component="nav">
               <ListItem
