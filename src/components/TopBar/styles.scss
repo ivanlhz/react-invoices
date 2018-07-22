@@ -42,4 +42,14 @@
       }
     }
   }
+  button{
+    background: none;
+    border: none;
+    color: #CCC;
+    font-size: 1rem;
+    &:hover{
+      color: white;
+      cursor: pointer;
+    }
+  }
 }
