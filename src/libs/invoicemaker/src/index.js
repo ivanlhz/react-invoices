@@ -25,6 +25,8 @@ class InvoiceMaker {
     }
   };
 
+  secondFormLeftWidth = type => (type.indexOf(TYPE_PVP) !== -1 ? 200 : 170);
+
   pdfSetRjTictacInfo = () => {
     this.document.fontSize(8).text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
     this.document.text('C/SAN CLEMENTE, 8', 20, 105, {
@@ -123,19 +125,23 @@ class InvoiceMaker {
     this.document.fontSize(10).text(`Nº Orden: ${params.numOrden}`, 490, 20);
     this.document.fontSize(11).text('Cliente', 25, 207);
     this.document.text(`:  ${params.customer.toLocaleUpperCase()}`, 100, 207, {
-      width: 240,
+      width: this.secondFormLeftWidth(params.formType),
     });
     this.document.text('Dirección', 25, 236);
     if (params.formType.indexOf(TYPE_PVP) !== -1) {
       this.document.text(`:  TLF-${params.tlfno}`, 100, 236);
       this.document.text(`:  DNI ${params.dni.toLocaleUpperCase()}`, 100, 248);
     } else {
-      this.document.text(`:  ${params.tlfno}`, 100, 236);
-      this.document.text(`:  ${params.dni.toLocaleUpperCase()}`, 100, 248);
+      this.document.text(`:  ${params.tlfno}`, 100, 236, {
+        width: this.secondFormLeftWidth(params.formType),
+      });
+      this.document.text(`:  ${params.dni.toLocaleUpperCase()}`, 100, 248, {
+        width: this.secondFormLeftWidth(params.formType),
+      });
     }
     this.document.text('Plaza', 25, 262);
     this.document.text(`:  ${params.location.toLocaleUpperCase()}`, 100, 262, {
-      width: params.formType.indexOf(TYPE_PVP) !== -1 ? 220 : 170,
+      width: this.secondFormLeftWidth(params.formType),
     });
 
     this.document.rect(20, 200, width / 2, 75); // Client data box
@@ -167,7 +173,6 @@ class InvoiceMaker {
       this.document.fontSize(12).text('DETALLE DE REPARACION - FORNITURA EMPLEADA', 23, 297);
       this.document.rect(500, 290, 90, 25); // IMPORTE
       this.document.fontSize(12).text('IMPORTES', 503, 297, { width: 90, align: 'center' });
-      this.document.fontSize(11).text(params.nconsecionario, 20, 637, { width: 100, align: 'center' });
       this.document.rect(180, 620, 200, 25); // impRecPubl
       this.document.fontSize(10).text('Imp. Rec. Público:', 185, 627, { width: 100, align: 'left' });
       this.document.fontSize(10).text(params.impRecPubl, 270, 627, { width: 100, align: 'left' });
@@ -180,9 +185,8 @@ class InvoiceMaker {
         [590, 620],
       );
     }
-
-    // Footer Separator
     this.document.fontSize(11).text('Nº Rep. Consecionario', 20, 625, { width: 195, align: 'left' });
+    this.document.fontSize(11).text(params.nconsecionario, 20, 637, { width: 100, align: 'center' });
     // Footer content
     this.document.text('Importe', footerX + 5, 625);
     this.document.text('Gastos de envio', footerX + 5, 637);

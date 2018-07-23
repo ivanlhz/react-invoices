@@ -7,6 +7,14 @@ import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
 import './styles.scss';
 
+// return trueText if type === TYPE_PVP else return falseText
+const textSelectorByType = (
+  type,
+  trueText,
+  falseText,
+) => (type.indexOf(TYPE_PVP) !== -1 ? trueText : falseText);
+
+
 const FormContent = ({
   handleChange,
   writeItems,
@@ -17,18 +25,11 @@ const FormContent = ({
     let element;
     if (formType.indexOf(TYPE_PVP) !== -1) {
       element = (
-        <div className="columns-2">
-          <TextField
-            placeholder="Nº de Consecionario"
-            type="number"
-            onChange={handleChange('nconsecionario')}
-          />
-          <TextField
-            placeholder="Imp. Rec. Público: "
-            type="number"
-            onChange={handleChange('impRecPubl')}
-          />
-        </div>
+        <TextField
+          placeholder="Imp. Rec. Público: "
+          type="number"
+          onChange={handleChange('impRecPubl')}
+        />
       );
     }
     return element;
@@ -41,6 +42,7 @@ const FormContent = ({
           placeholder="Número de orden"
           onChange={handleChange('numOrden')}
           type="text"
+          inputProps={{ maxLength: '11' }}
         />
         <div className="company-info">
           <InputLabel htmlFor="company-type">
@@ -69,29 +71,36 @@ const FormContent = ({
             placeholder="Nombre cliente"
             onChange={handleChange('customer')}
             type="text"
+            inputProps={{ maxLength: '44' }}
           />
           <TextField
-            placeholder="Telefono"
+            placeholder={textSelectorByType(formType, 'Telefono', 'Dirección 1')}
             onChange={handleChange('tlfno')}
             type="text"
+            inputProps={textSelectorByType(formType, { maxLength: '11' }, { maxLength: '22' })}
           />
           <TextField
-            placeholder="Dni"
+            placeholder={textSelectorByType(formType, 'Dni', 'Dirección 2')}
             onChange={handleChange('dni')}
             type="text"
+            inputProps={textSelectorByType(formType, { maxLength: '9' }, { maxLength: '22' })}
           />
           <TextField
             className="span-3"
-            placeholder="Dirección"
+            placeholder="Plaza"
             onChange={handleChange('location')}
             type="text"
+            inputProps={textSelectorByType(formType, { maxLength: '29' }, { maxLength: '22' })}
           />
         </div>
         <div className="columns-3">
           <TextField
-            placeholder="Fecha de entrada"
+            label="Fecha de entrada"
             onChange={handleChange('entryDate')}
-            type="text"
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
           <TextField
             placeholder="Presupuesto"
@@ -116,12 +125,19 @@ const FormContent = ({
           />
         </div>
       </div>
-      {onlyModel2()}
       <div className="columns-2">
         <TextField
-          placeholder="Fecha de entrega"
+          placeholder="Nº de Consecionario"
+          type="number"
+          onChange={handleChange('nconsecionario')}
+        />
+        <TextField
+          label="Fecha de entrega"
           onChange={handleChange('deliveryDate')}
-          type="text"
+          type="date"
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
         <TextField
           name="shipping"
@@ -131,6 +147,7 @@ const FormContent = ({
           onChange={handleChange('shipping')}
           type="number"
         />
+        {onlyModel2()}
       </div>
       <div className="full-width">
         <Input
