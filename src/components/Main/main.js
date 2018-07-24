@@ -8,7 +8,19 @@ import InvoiceItem from '../InvoiceItem';
 import FormContent from '../FormContent';
 import './main.scss';
 
+class State {
+  constructor(currentState) {
+    this.data = Object.assign({}, currentState);
+  }
+
+  get() {
+    return this.data;
+  }
+}
+
 class MainApp extends Component {
+  data = undefined;
+
   state = {
     numOrden: '',
     moreInfo: '',
@@ -76,7 +88,14 @@ class MainApp extends Component {
     };
   }
 
+ recoverState = () => {
+   if (this.data) {
+     this.setState(this.data.get());
+   }
+ }
+
   resetState = () => {
+    this.data = new State(this.state);
     this.setState(
       {
         numOrden: '',
@@ -148,7 +167,7 @@ class MainApp extends Component {
     const { formType, companyType } = this.state;
     return (
       <div className="layout">
-        <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} />
+        <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} recoverData={this.recoverState} recoverIsVisible={this.data !== undefined} />
         <div className="main">
           <div className="left-menu">
             <List component="nav">
