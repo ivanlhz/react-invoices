@@ -2,7 +2,9 @@ import React from 'react';
 import {
   Select, InputLabel, TextField, Input,
 } from '@material-ui/core';
-import { string, func } from 'prop-types';
+import {
+  string, func, shape, number,
+} from 'prop-types';
 import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
 import './styles.scss';
@@ -20,6 +22,7 @@ const FormContent = ({
   writeItems,
   companyType,
   formType,
+  formFields,
 }) => {
   const onlyModel2 = () => {
     let element;
@@ -29,6 +32,7 @@ const FormContent = ({
           placeholder="Imp. Rec. Público: "
           type="number"
           onChange={handleChange('impRecPubl')}
+          value={formFields.impRecPubl}
         />
       );
     }
@@ -43,6 +47,7 @@ const FormContent = ({
           onChange={handleChange('numOrden')}
           type="text"
           inputProps={{ maxLength: '11' }}
+          value={formFields.numOrden}
         />
         <div className="company-info">
           <InputLabel htmlFor="company-type">
@@ -72,18 +77,21 @@ const FormContent = ({
             onChange={handleChange('customer')}
             type="text"
             inputProps={{ maxLength: '44' }}
+            value={formFields.customer}
           />
           <TextField
             placeholder={textSelectorByType(formType, 'Telefono', 'Dirección 1')}
             onChange={handleChange('tlfno')}
             type="text"
             inputProps={textSelectorByType(formType, { maxLength: '11' }, { maxLength: '22' })}
+            value={formFields.tlfno}
           />
           <TextField
             placeholder={textSelectorByType(formType, 'Dni', 'Dirección 2')}
             onChange={handleChange('dni')}
             type="text"
             inputProps={textSelectorByType(formType, { maxLength: '9' }, { maxLength: '22' })}
+            value={formFields.dni}
           />
           <TextField
             className="span-3"
@@ -91,6 +99,7 @@ const FormContent = ({
             onChange={handleChange('location')}
             type="text"
             inputProps={textSelectorByType(formType, { maxLength: '29' }, { maxLength: '22' })}
+            value={formFields.location}
           />
         </div>
         <div className="columns-3">
@@ -101,27 +110,32 @@ const FormContent = ({
             InputLabelProps={{
               shrink: true,
             }}
+            value={formFields.entryDate}
           />
           <TextField
             placeholder="Presupuesto"
             onChange={handleChange('budget')}
             type="text"
+            value={formFields.budget}
           />
           <TextField
             placeholder="Modelo"
             onChange={handleChange('model')}
             type="text"
+            value={formFields.model}
           />
           <TextField
             placeholder="Num caja"
             onChange={handleChange('box')}
             type="text"
+            value={formFields.box}
           />
           <TextField
             name="control"
             placeholder="Num control"
             onChange={handleChange('control')}
             type="text"
+            value={formFields.control}
           />
         </div>
       </div>
@@ -130,6 +144,7 @@ const FormContent = ({
           placeholder="Nº de Consecionario"
           type="number"
           onChange={handleChange('nconsecionario')}
+          value={formFields.nconsecionario}
         />
         <TextField
           label="Fecha de entrega"
@@ -138,6 +153,7 @@ const FormContent = ({
           InputLabelProps={{
             shrink: true,
           }}
+          value={formFields.deliveryDate}
         />
         <TextField
           name="shipping"
@@ -146,6 +162,7 @@ const FormContent = ({
           placeholder="Gastos de envio"
           onChange={handleChange('shipping')}
           type="number"
+          value={formFields.shipping}
         />
         {onlyModel2()}
       </div>
@@ -155,6 +172,7 @@ const FormContent = ({
           placeholder="Observaciones"
           className="moreinfo"
           onChange={handleChange('moreInfo')}
+          value={formFields.moreInfo}
         />
       </div>
       <div className="full-width">
@@ -169,6 +187,23 @@ FormContent.propTypes = {
   writeItems: func.isRequired,
   companyType: string.isRequired,
   formType: string.isRequired,
+  formFields: shape({
+    impRecPubl: number,
+    numOrden: string,
+    customer: string,
+    tlfno: string,
+    dni: string,
+    location: string,
+    entryDate: string,
+    budget: string,
+    box: string,
+    model: string,
+    control: string,
+    nconsecionario: number,
+    deliveryDate: string,
+    shipping: number,
+    moreInfo: string,
+  }).isRequired,
 };
 
 export default FormContent;

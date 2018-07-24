@@ -27,7 +27,7 @@ class MainApp extends Component {
     companyType: LVMH_TYPE,
     shipping: 0.0,
     formType: TYPE_PVP,
-    impRecPubl: '',
+    impRecPubl: 0,
   };
 
   onUpdateItem = (value) => {
@@ -37,6 +37,68 @@ class MainApp extends Component {
     itemList[value.id] = value;
     if (JSON.stringify(items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
   };
+
+  getFormData = () => {
+    const {
+      impRecPubl,
+      numOrden,
+      customer,
+      tlfno,
+      dni,
+      location,
+      entryDate,
+      budget,
+      box,
+      model,
+      control,
+      nconsecionario,
+      deliveryDate,
+      shipping,
+      moreInfo,
+    } = this.state;
+
+    return {
+      impRecPubl,
+      numOrden,
+      customer,
+      tlfno,
+      dni,
+      location,
+      entryDate,
+      budget,
+      box,
+      model,
+      control,
+      nconsecionario,
+      deliveryDate,
+      shipping,
+      moreInfo,
+    };
+  }
+
+  resetState = () => {
+    this.setState(
+      {
+        numOrden: '',
+        moreInfo: '',
+        customer: '',
+        tlfno: '',
+        dni: '',
+        location: '',
+        entryDate: '',
+        deliveryDate: '',
+        budget: '',
+        model: '',
+        box: '',
+        control: '',
+        items: [],
+        nconsecionario: 0,
+        companyType: LVMH_TYPE,
+        shipping: 0.0,
+        impRecPubl: 0,
+      },
+    );
+  }
 
   writeItems = () => {
     const { items } = this.state;
@@ -64,6 +126,7 @@ class MainApp extends Component {
     invoiceMaker.pdfSetRjTictacInfo();
     invoiceMaker.pdfSetItems(items, shipping, formType);
     invoiceMaker.pdfSetDocumentBody(this.state);
+    this.resetState();
     return invoiceMaker.getDoc();
   };
 
@@ -110,6 +173,7 @@ class MainApp extends Component {
               handleChange={this.handleChange}
               writeItems={this.writeItems}
               companyType={companyType}
+              formFields={this.getFormData()}
               formType={formType}
             />
           </div>
