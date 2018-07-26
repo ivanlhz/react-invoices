@@ -4,6 +4,7 @@ import blobStream from 'blob-stream';
 import { saveAs } from 'file-saver';
 import PDFDocument from 'pdfkit';
 import './styles.scss';
+import { Refresh } from '@material-ui/icons';
 
 
 class TopBar extends Component {
@@ -23,7 +24,7 @@ class TopBar extends Component {
     const { recoverData } = this.props;
     return (
       <button type="button" onClick={recoverData}>
-        Recuperar
+        <Refresh />
       </button>);
   }
 
