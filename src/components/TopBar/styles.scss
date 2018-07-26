@@ -9,7 +9,7 @@
   grid-template-columns: 1fr auto;
   background-color: cornflowerblue;
   padding: 12px;
-  color: white;
+  color: #434a86;
   a:link,
   a:visited {
     color: #EEE;
@@ -45,11 +45,14 @@
   button{
     background: none;
     border: none;
-    color: #CCC;
+    color: #434a86;
     font-size: 1rem;
     &:hover{
       color: white;
       cursor: pointer;
+    }
+    &::visited{
+      border: 0;
     }
   }
 }
