@@ -28,21 +28,23 @@ class InvoiceMaker {
   secondFormLeftWidth = type => (type.indexOf(TYPE_PVP) !== -1 ? 200 : 170);
 
   pdfSetRjTictacInfo = () => {
-    this.document.fontSize(8).text('42.026.779-Y', 20, 90, { width: 195, align: 'center' });
-    this.document.text('C/SAN CLEMENTE, 8', 20, 105, {
+    const basePosition = 20;
+    this.document.fontSize(8).text('Juan Carlos López Mora', 20, basePosition + 75, { width: 195, align: 'center' });
+    this.document.fontSize(8).text('42.026.779-Y', 20, basePosition + 90, { width: 195, align: 'center' });
+    this.document.text('C/SAN CLEMENTE, 8', 20, basePosition + 105, {
       width: 195,
       align: 'center',
     });
-    this.document.text('38003 - SANTA CRUZ DE TENERIFE', 20, 120, {
+    this.document.text('38003 - SANTA CRUZ DE TENERIFE', 20, basePosition + 120, {
       width: 195,
       align: 'center',
     });
-    this.document.text('922-24.23.85', 20, 135, { width: 195, align: 'center' });
-    this.document.text('Santa Cruz de Tenerife', 20, 150, {
+    this.document.text('922-24.23.85', 20, basePosition + 135, { width: 195, align: 'center' });
+    this.document.text('Santa Cruz de Tenerife', 20, basePosition + 150, {
       width: 195,
       align: 'center',
     });
-    this.document.text('Tenerife', 20, 165, { width: 195, align: 'center' });
+    this.document.text('Tenerife', 20, basePosition + 165, { width: 195, align: 'center' });
   };
 
   pdfSetCompanyHeader = (headerType) => {
