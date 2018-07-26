@@ -29,7 +29,7 @@ const FormContent = ({
     if (formType.indexOf(TYPE_PVP) !== -1) {
       element = (
         <TextField
-          placeholder="Imp. Rec. Público: "
+          label="Imp. Rec. Público: "
           type="number"
           onChange={handleChange('impRecPubl')}
           value={formFields.impRecPubl}
@@ -110,6 +110,7 @@ const FormContent = ({
             InputLabelProps={{
               shrink: true,
             }}
+            format="DD/MM/YYYY"
             value={formFields.entryDate}
           />
           <TextField
@@ -145,6 +146,7 @@ const FormContent = ({
           type="number"
           onChange={handleChange('nconsecionario')}
           value={formFields.nconsecionario}
+          label="Nº de Consecionario"
         />
         <TextField
           label="Fecha de entrega"
@@ -159,7 +161,7 @@ const FormContent = ({
           name="shipping"
           min="0"
           step="0.25"
-          placeholder="Gastos de envio"
+          label="Gastos de envio"
           onChange={handleChange('shipping')}
           type="number"
           value={formFields.shipping}

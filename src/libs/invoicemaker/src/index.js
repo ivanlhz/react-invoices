@@ -115,6 +115,8 @@ class InvoiceMaker {
     });
   };
 
+  formatDate = date => date.split('-').reverse().join('/');
+
   pdfSetDocumentBody = (params) => {
     const width = this.rectWidth;
     const separator = this.separatorX;
@@ -147,7 +149,7 @@ class InvoiceMaker {
     this.document.rect(20, 200, width / 2, 75); // Client data box
     this.document.rect(width / 2 + 20, 200, width / 2, 75); // Client data box
     this.document.text('Fecha de entrada', separator + 5, 207);
-    this.document.text(`:  ${params.entryDate}`, separator + 105, 207);
+    this.document.text(`:  ${this.formatDate(params.entryDate)}`, separator + 105, 207);
     this.document.text('Presupuesto', separator + 5, 222);
     this.document.text(`:  ${params.budget}`, separator + 105, 222);
     this.document.text('Modelo', separator + 5, 236);
@@ -203,7 +205,7 @@ class InvoiceMaker {
       width: 140,
       align: 'center',
     });
-    this.document.text(params.deliveryDate, morinfoW + 43, 717, {
+    this.document.text(this.formatDate(params.deliveryDate), morinfoW + 43, 717, {
       width: 140,
       align: 'center',
     });
