@@ -2,6 +2,7 @@ import { TYPE_RESELLER, TYPE_PVP } from '../../../constats/form-types';
 
 const LVMH_TYPE = 'lvmh';
 const MGI_TYPE = 'mgi';
+const OTHERS_TYPE = 'Otros';
 
 class InvoiceMaker {
   constructor(doc) {
@@ -11,6 +12,7 @@ class InvoiceMaker {
     this.morinfoWidth = 400;
     this.footerContentX = 200;
     this.footerContentWidth = 200;
+    this.headerLineNumber = 0;
   }
 
   getDoc = () => this.document;
@@ -27,50 +29,42 @@ class InvoiceMaker {
 
   secondFormLeftWidth = type => (type.indexOf(TYPE_PVP) !== -1 ? 200 : 170);
 
-  pdfSetRjTictacInfo = () => {
-    const basePosition = 20;
-    this.document.fontSize(8).text('Juan Carlos López Mora', 20, basePosition + 75, { width: 195, align: 'center' });
-    this.document.fontSize(8).text('42.026.779-Y', 20, basePosition + 90, { width: 195, align: 'center' });
-    this.document.text('C/SAN CLEMENTE, 8', 20, basePosition + 105, {
-      width: 195,
-      align: 'center',
-    });
-    this.document.text('38003 - SANTA CRUZ DE TENERIFE', 20, basePosition + 120, {
-      width: 195,
-      align: 'center',
-    });
-    this.document.text('922-24.23.85', 20, basePosition + 135, { width: 195, align: 'center' });
-    this.document.text('Santa Cruz de Tenerife', 20, basePosition + 150, {
-      width: 195,
-      align: 'center',
-    });
-    this.document.text('Tenerife', 20, basePosition + 165, { width: 195, align: 'center' });
+  addLineHeader = basePosition => (text, fontSize = 8, align = 'center') => {
+    this.document.fontSize(fontSize).text(
+      text,
+      20,
+      basePosition + (15 * this.headerLineNumber),
+      { align, width: 195 },
+    );
+    this.headerLineNumber += 1;
+  };
+
+  pdfSetRjTictacInfo = (basePosition = 35, type = LVMH_TYPE) => {
+    const writeHeaderLine = this.addLineHeader(basePosition);
+    if (type.indexOf(OTHERS_TYPE) !== -1) {
+      writeHeaderLine('RELOJERIA - JOYERIA TICTAC', 10);
+    }
+    writeHeaderLine('Juan Carlos López Mora');
+    writeHeaderLine('42.026.779-Y');
+    writeHeaderLine('C/SAN CLEMENTE, 8');
+    writeHeaderLine('38003 - SANTA CRUZ DE TENERIFE');
+    writeHeaderLine('922-24.23.85');
+    writeHeaderLine('Santa Cruz de Tenerife');
+    writeHeaderLine('Tenerife');
   };
 
   pdfSetCompanyHeader = (headerType) => {
+    const writeHeaderLine = this.addLineHeader(20);
+
     if (headerType === LVMH_TYPE) {
-      this.document.fontSize(10);
-      this.document.text('LVMH RELOJERIA Y JOYERIA ESPAÑA', 20, 20, {
-        width: 195,
-        align: 'center',
-      });
-      this.document.fontSize(8);
-      this.document.text('Servicio Técnico Oficial de Canarias', 20, 35, {
-        width: 195,
-        align: 'center',
-      });
-      this.document.text('TAG-HEUER - ZENITH', 20, 50, {
-        width: 195,
-        align: 'center',
-      });
-      this.document.text('CRISTIAN DIOR', 20, 65, { width: 195, align: 'center' });
+      writeHeaderLine('LVMH RELOJERIA Y JOYERIA ESPAÑA', 10);
+      writeHeaderLine('Servicio Técnico Oficial de Canarias');
+      writeHeaderLine('TAG-HEUER - ZENITH');
+      writeHeaderLine('CRISTIAN DIOR');
     } else {
-      this.document.fontSize(12).text('MGI Luxury Group S.A', 20, 20, { width: 195, align: 'center' });
-      this.document.fontSize(10).text('EBEL', 20, 35, { width: 195, align: 'center' });
-      this.document.fontSize(6).text('Servicio Técnico Oficial Canarias', 20, 50, {
-        width: 195,
-        align: 'center',
-      });
+      writeHeaderLine('MGI Luxury Group S.A', 12);
+      writeHeaderLine('EBEL', 10);
+      writeHeaderLine('Servicio Técnico Oficial Canarias', 6);
     }
   };
 
@@ -216,4 +210,9 @@ class InvoiceMaker {
   };
 }
 
-export { MGI_TYPE, LVMH_TYPE, InvoiceMaker };
+export {
+  MGI_TYPE,
+  LVMH_TYPE,
+  OTHERS_TYPE,
+  InvoiceMaker,
+};

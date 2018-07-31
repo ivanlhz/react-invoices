@@ -5,7 +5,7 @@ import {
 import {
   string, func, shape, number,
 } from 'prop-types';
-import { MGI_TYPE, LVMH_TYPE } from '../../libs/invoicemaker';
+import { MGI_TYPE, LVMH_TYPE, OTHERS_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP } from '../../constats/form-types';
 import './styles.scss';
 
@@ -66,6 +66,9 @@ const FormContent = ({
             </option>
             <option value={MGI_TYPE}>
               MGI
+            </option>
+            <option value={OTHERS_TYPE}>
+              Otras
             </option>
           </Select>
         </div>
