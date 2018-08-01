@@ -172,7 +172,7 @@ class MainApp extends Component {
     const { formType, companyType } = this.state;
     return (
       <div className="layout">
-        <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} recoverData={this.recoverState} recoverIsVisible={this.data !== undefined} />
+        <TopBar className="topbar" title="Ordenes de TrabajoS" getDocument={this.generateDocument} recoverData={this.recoverState} recoverIsVisible={this.data !== undefined} />
         <div className="main">
           <div className="left-menu">
             <List component="nav">

@@ -23,9 +23,12 @@ class TopBar extends Component {
   recoverButton = () => {
     const { recoverData } = this.props;
     return (
-      <button type="button" onClick={recoverData}>
-        <Refresh />
-      </button>);
+      <li>
+        <button type="button" onClick={recoverData}>
+          <Refresh />
+        </button>
+      </li>
+    );
   }
 
   render = () => {
@@ -37,9 +40,7 @@ class TopBar extends Component {
         </h1>
         <div className="header-bar-right">
           <ul>
-            <li>
-              { recoverIsVisible ? this.recoverButton() : undefined }
-            </li>
+            { recoverIsVisible ? this.recoverButton() : undefined }
             <li>
               <button type="button" onClick={this.handleCreatePdf}>
                 Generar
