@@ -1,6 +1,7 @@
 # Invoice React
 ## Description
 React simple form that generate a pdf invoice with all information typed in the form.
+The project is a desktop application for manage invoices and generate a PDF with all the form data. Currently the project is focused on a single client but in the future the application  is going to be able to support different input form data, charts, PDF templates, PDF preview, save into db the generated invoices data, import data from json and change the information about the business.
 
 ## Instalation
 Clone the repository by `git clone <repo-url>`  
