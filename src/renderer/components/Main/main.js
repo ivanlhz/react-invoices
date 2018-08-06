@@ -7,7 +7,6 @@ import TopBar from '../TopBar';
 import InvoiceItem from '../InvoiceItem';
 import FormContent from '../FormContent';
 import './main.scss';
-import { OTHERS_TYPE } from '../../libs/invoicemaker/src';
 
 class State {
   constructor(currentState) {
@@ -142,12 +141,7 @@ class MainApp extends Component {
       companyType, shipping, items, formType,
     } = this.state;
     const invoiceMaker = new InvoiceMaker(doc);
-    if (companyType.indexOf(OTHERS_TYPE) !== -1) {
-      invoiceMaker.pdfSetRjTictacInfo(20, companyType);
-    } else {
-      invoiceMaker.pdfSetCompanyHeader(companyType);
-      invoiceMaker.pdfSetRjTictacInfo();
-    }
+    invoiceMaker.pdfSetHeaderInfo(20, companyType);
     invoiceMaker.pdfSetItems(items, shipping, formType);
     invoiceMaker.pdfSetDocumentBody(this.state);
     this.resetState();

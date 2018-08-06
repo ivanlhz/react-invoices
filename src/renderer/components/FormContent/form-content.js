@@ -5,8 +5,9 @@ import {
 import {
   string, func, shape, number,
 } from 'prop-types';
-import { MGI_TYPE, LVMH_TYPE, OTHERS_TYPE } from '../../libs/invoicemaker';
+
 import { TYPE_PVP } from '../../constats/form-types';
+import types from '../../mocks/mock.types';
 import './styles.scss';
 
 // return trueText if type === TYPE_PVP else return falseText
@@ -61,15 +62,13 @@ const FormContent = ({
               id: 'company-type',
             }}
           >
-            <option value={LVMH_TYPE}>
-              LVMH
-            </option>
-            <option value={MGI_TYPE}>
-              MGI
-            </option>
-            <option value={OTHERS_TYPE}>
-              Otras
-            </option>
+            {
+              types.map(element => (
+                <option value={element.name}>
+                  {element.label}
+                </option>
+              ))
+            }
           </Select>
         </div>
       </div>

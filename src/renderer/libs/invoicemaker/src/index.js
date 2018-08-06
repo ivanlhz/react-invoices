@@ -1,8 +1,8 @@
 import { TYPE_RESELLER, TYPE_PVP } from '../../../constats/form-types';
+import headerInfo from '../../../mocks/mock.header';
 
 const LVMH_TYPE = 'lvmh';
 const MGI_TYPE = 'mgi';
-const OTHERS_TYPE = 'Otros';
 
 class InvoiceMaker {
   constructor(doc) {
@@ -34,38 +34,33 @@ class InvoiceMaker {
       text,
       20,
       basePosition + (15 * this.headerLineNumber),
-      { align, width: 195 },
+      { align, width: 250 },
     );
     this.headerLineNumber += 1;
   };
 
-  pdfSetRjTictacInfo = (basePosition = 35, type = LVMH_TYPE) => {
-    const writeHeaderLine = this.addLineHeader(basePosition);
-    if (type.indexOf(OTHERS_TYPE) !== -1) {
-      writeHeaderLine('RELOJERIA - JOYERIA TICTAC', 10);
-    }
-    writeHeaderLine('Juan Carlos López Mora');
-    writeHeaderLine('42.026.779-Y');
-    writeHeaderLine('C/SAN CLEMENTE, 8');
-    writeHeaderLine('38003 - SANTA CRUZ DE TENERIFE');
-    writeHeaderLine('922-24.23.85');
-    writeHeaderLine('Santa Cruz de Tenerife');
-    writeHeaderLine('Tenerife');
+  writeHeaderContent = (content, fn) => {
+    content.map((element) => {
+      fn(element);
+      return element;
+    });
   };
 
-  pdfSetCompanyHeader = (headerType) => {
-    const writeHeaderLine = this.addLineHeader(20);
-
-    if (headerType === LVMH_TYPE) {
-      writeHeaderLine('LVMH RELOJERIA Y JOYERIA ESPAÑA', 10);
-      writeHeaderLine('Servicio Técnico Oficial de Canarias');
-      writeHeaderLine('TAG-HEUER - ZENITH');
-      writeHeaderLine('CRISTIAN DIOR');
-    } else {
-      writeHeaderLine('MGI Luxury Group S.A', 12);
-      writeHeaderLine('EBEL', 10);
-      writeHeaderLine('Servicio Técnico Oficial Canarias', 6);
+  pdfSetHeaderInfo = (basePosition = 35, type = LVMH_TYPE) => {
+    const writeHeaderLine = this.addLineHeader(basePosition);
+    const { title, subtitle, content } = headerInfo.filter(element => element.type === type)[0];
+    if (title) {
+      writeHeaderLine(title, 12);
     }
+    if (subtitle) {
+      writeHeaderLine(subtitle, 10);
+    }
+    if (content) {
+      this.writeHeaderContent(content, writeHeaderLine);
+    }
+
+    const info = headerInfo.filter(element => element.type === undefined)[0];
+    this.writeHeaderContent(info.content, writeHeaderLine);
   };
 
   pdfSetItems = (items, shipping, formModel) => {
@@ -213,6 +208,5 @@ class InvoiceMaker {
 export {
   MGI_TYPE,
   LVMH_TYPE,
-  OTHERS_TYPE,
   InvoiceMaker,
 };
