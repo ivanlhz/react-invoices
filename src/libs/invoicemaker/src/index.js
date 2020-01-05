@@ -153,7 +153,7 @@ class InvoiceMaker {
     this.document.text('Presupuesto', separator, 222);
     this.document.text(`:  ${params.budget}`, separator + 100, 222);
     this.document.text('Modelo', separator, 236);
-    this.document.text(`:  ${params.model}`, separator + 0, 236);
+    this.document.text(`:  ${params.model}`, separator + 100, 236);
     this.document.text('Nº Caja', separator, 248);
     this.document.text(`:  ${params.box}`, separator + 100, 248);
     this.document.text('Nº Control', separator, 262);
