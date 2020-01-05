@@ -24,7 +24,7 @@ class InvoiceMaker {
   calculatePositions = (formType) => {
     if (formType.indexOf(TYPE_RESELLER) !== -1) {
       this.rectWidth -= 100;
-      this.separatorX -= 100;
+      this.separatorX -= 60;
       this.morinfoWidth -= 100;
       this.footerContentX += 200;
       this.footerContentWidth -= 10;
