@@ -1,4 +1,8 @@
 import { TYPE_RESELLER, TYPE_PVP } from '../../../constats/form-types';
+import fs from 'fs'
+import Helvetica from '!!raw-loader!pdfkit/js/data/Helvetica.afm'
+
+fs.writeFileSync('data/Helvetica.afm', Helvetica)
 
 const LVMH_TYPE = 'lvmh';
 const MGI_TYPE = 'mgi';
@@ -8,7 +12,7 @@ class InvoiceMaker {
   constructor(doc) {
     this.document = doc;
     this.rectWidth = 570;
-    this.separatorX = 380;
+    this.separatorX = 320;
     this.morinfoWidth = 400;
     this.footerContentX = 200;
     this.footerContentWidth = 200;
@@ -144,16 +148,16 @@ class InvoiceMaker {
 
     this.document.rect(20, 200, width / 2, 75); // Client data box
     this.document.rect(width / 2 + 20, 200, width / 2, 75); // Client data box
-    this.document.text('Fecha de entrada', separator + 5, 207);
-    this.document.text(`:  ${this.formatDate(params.entryDate)}`, separator + 105, 207);
-    this.document.text('Presupuesto', separator + 5, 222);
-    this.document.text(`:  ${params.budget}`, separator + 105, 222);
-    this.document.text('Modelo', separator + 5, 236);
-    this.document.text(`:  ${params.model}`, separator + 105, 236);
-    this.document.text('Nº Caja', separator + 5, 248);
-    this.document.text(`:  ${params.box}`, separator + 105, 248);
-    this.document.text('Nº Control', separator + 5, 262);
-    this.document.text(`:  ${params.control}`, separator + 105, 262);
+    this.document.text('Fecha de entrada', separator, 207);
+    this.document.text(`:  ${this.formatDate(params.entryDate)}`, separator + 100, 207);
+    this.document.text('Presupuesto', separator, 222);
+    this.document.text(`:  ${params.budget}`, separator + 100, 222);
+    this.document.text('Modelo', separator, 236);
+    this.document.text(`:  ${params.model}`, separator + 0, 236);
+    this.document.text('Nº Caja', separator, 248);
+    this.document.text(`:  ${params.box}`, separator + 100, 248);
+    this.document.text('Nº Control', separator, 262);
+    this.document.text(`:  ${params.control}`, separator + 100, 262);
 
     if (params.formType.indexOf(TYPE_PVP) !== -1) {
       this.document.rect(20, 290, 570, 25); // Title

@@ -1,10 +1,16 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
 
 module.exports = {
   devServer: {
     historyApiFallback: true,
     open: true,
+  },
+  resolve: {
+		alias: {
+			fs: 'pdfkit/js/virtual-fs.js'
+		}
   },
   module: {
     rules: [
@@ -15,20 +21,21 @@ module.exports = {
           use: 'css-loader!sass-loader',
         }),
       },
-      {
-        test: /node_modules\/(pdfkit|brotli|fontkit|linebreak|png-js|unicode-properties)/,
-        loader: 'transform-loader?brfs',
-      },
+      { enforce: 'post', test: /fontkit[/\\]index.js$/, loader: "transform-loader?brfs" },
+      { enforce: 'post', test: /unicode-properties[/\\]index.js$/, loader: "transform-loader?brfs" },
+      { enforce: 'post', test: /linebreak[/\\]src[/\\]linebreaker.js/, loader: "transform-loader?brfs" },
+      { test: /src[/\\]assets/, loader: 'arraybuffer-loader'},
+      { test: /\.afm$/, loader: 'raw-loader'},
       {
         test: /.jsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: ['babel-loader'],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: path.resolve(__dirname, '../src/index.html'),
       filename: './index.html',
     }),
     new ExtractTextWebpackPlugin('style.css'),
