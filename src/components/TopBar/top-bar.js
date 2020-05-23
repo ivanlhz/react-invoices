@@ -7,10 +7,9 @@ import './styles.scss';
 import { Refresh } from '@material-ui/icons';
 
 
-class TopBar extends Component {
-  handleCreatePdf = (e) => {
+function TopBar ({ title, recoverIsVisible, getDocument, recoverData }) {
+  function handleCreatePdf(e) {
     e.preventDefault();
-    const { getDocument } = this.props;
     let doc = new PDFDocument({ margin: 10 });
     doc = getDocument(doc);
     const stream = doc.pipe(blobStream());
@@ -20,36 +19,31 @@ class TopBar extends Component {
     });
   };
 
-  recoverButton = () => {
-    const { recoverData } = this.props;
+  function recoverButton() {
     return (
       <button type="button" onClick={recoverData}>
         <Refresh />
       </button>);
   }
-
-  render = () => {
-    const { title, recoverIsVisible } = this.props;
-    return (
-      <div className="header-bar">
-        <h1>
-          {title}
-        </h1>
-        <div className="header-bar-right">
-          <ul>
-            <li>
-              { recoverIsVisible ? this.recoverButton() : undefined }
-            </li>
-            <li>
-              <button type="button" onClick={this.handleCreatePdf}>
-                Generar
-              </button>
-            </li>
-          </ul>
-        </div>
+  return (
+    <div className="header-bar">
+      <h1>
+        {title}
+      </h1>
+      <div className="header-bar-right">
+        <ul>
+          <li>
+            { recoverIsVisible && recoverButton() }
+          </li>
+          <li>
+            <button type="button" onClick={handleCreatePdf}>
+              Generar
+            </button>
+          </li>
+        </ul>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 TopBar.propTypes = {

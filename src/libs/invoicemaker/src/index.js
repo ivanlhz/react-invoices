@@ -15,9 +15,11 @@ class InvoiceMaker {
     this.headerLineNumber = 0;
   }
 
-  getDoc = () => this.document;
+  getDoc() {
+    return this.document;
+  }
 
-  calculatePositions = (formType) => {
+  calculatePositions(formType) {
     if (formType.indexOf(TYPE_RESELLER) !== -1) {
       this.rectWidth -= 100;
       this.separatorX -= 100;
@@ -27,19 +29,23 @@ class InvoiceMaker {
     }
   };
 
-  secondFormLeftWidth = type => (type.indexOf(TYPE_PVP) !== -1 ? 200 : 170);
+  secondFormLeftWidth(type) {
+    return (type.indexOf(TYPE_PVP) !== -1 ? 200 : 170)
+  }
 
-  addLineHeader = basePosition => (text, fontSize = 8, align = 'center') => {
-    this.document.fontSize(fontSize).text(
-      text,
-      20,
-      basePosition + (15 * this.headerLineNumber),
-      { align, width: 195 },
-    );
-    this.headerLineNumber += 1;
-  };
+  addLineHeader(basePosition) {
+      return function(text, fontSize = 8, align = 'center'){
+      this.document.fontSize(fontSize).text(
+        text,
+        20,
+        basePosition + (15 * this.headerLineNumber),
+        { align, width: 195 },
+      );
+      this.headerLineNumber += 1;
+    };
+  }
 
-  pdfSetRjTictacInfo = (basePosition = 35, type = LVMH_TYPE) => {
+  pdfSetRjTictacInfo(basePosition = 35, type = LVMH_TYPE){
     const writeHeaderLine = this.addLineHeader(basePosition);
     if (type.indexOf(OTHERS_TYPE) !== -1) {
       writeHeaderLine('RELOJERIA - JOYERIA TICTAC', 10);
@@ -53,7 +59,7 @@ class InvoiceMaker {
     writeHeaderLine('Tenerife');
   };
 
-  pdfSetCompanyHeader = (headerType) => {
+  pdfSetCompanyHeader(headerType) {
     const writeHeaderLine = this.addLineHeader(20);
 
     if (headerType === LVMH_TYPE) {
@@ -68,7 +74,7 @@ class InvoiceMaker {
     }
   };
 
-  pdfSetItems = (items, shipping, formModel) => {
+  pdfSetItems(items, shipping, formModel){
     this.calculatePositions(formModel);
     const footerxPotition = this.footerContentX;
     let line = 0;
@@ -111,9 +117,11 @@ class InvoiceMaker {
     });
   };
 
-  formatDate = date => date.split('-').reverse().join('/');
+  formatDate(date) {
+    return date.split('-').reverse().join('/');
+  }
 
-  pdfSetDocumentBody = (params) => {
+  pdfSetDocumentBody(params) {
     const width = this.rectWidth;
     const separator = this.separatorX;
     const morinfoW = this.morinfoWidth;

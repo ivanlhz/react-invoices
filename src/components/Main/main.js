@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, {useState} from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
-
 import { InvoiceMaker, LVMH_TYPE } from '../../libs/invoicemaker';
 import { TYPE_PVP, TYPE_RESELLER } from '../../constats/form-types';
 import TopBar from '../TopBar';
@@ -9,49 +8,40 @@ import FormContent from '../FormContent';
 import './main.scss';
 import { OTHERS_TYPE } from '../../libs/invoicemaker/src';
 
-class State {
-  constructor(currentState) {
-    this.data = Object.assign({}, currentState);
-  }
+const defaultState = {
+  numOrden: '',
+  moreInfo: '',
+  customer: '',
+  tlfno: '',
+  dni: '',
+  location: '',
+  entryDate: '',
+  deliveryDate: '',
+  budget: '',
+  model: '',
+  box: '',
+  control: '',
+  items: [],
+  nconsecionario: 0,
+  companyType: LVMH_TYPE,
+  shipping: 0.0,
+  formType: TYPE_PVP,
+  impRecPubl: 0,
+};
 
-  get() {
-    return this.data;
-  }
-}
+function MainApp () {
+  const [state, setState] = useState(defaultState)
+  const [tempState, setTempState] = useState(defaultState)
 
-class MainApp extends Component {
-  data = undefined;
-
-  state = {
-    numOrden: '',
-    moreInfo: '',
-    customer: '',
-    tlfno: '',
-    dni: '',
-    location: '',
-    entryDate: '',
-    deliveryDate: '',
-    budget: '',
-    model: '',
-    box: '',
-    control: '',
-    items: [],
-    nconsecionario: 0,
-    companyType: LVMH_TYPE,
-    shipping: 0.0,
-    formType: TYPE_PVP,
-    impRecPubl: 0,
-  };
-
-  onUpdateItem = (value) => {
-    const { items } = this.state;
+  const onUpdateItem = (value) => {
+    const { items } = state;
     const itemList = Object.assign([], [...items]);
 
     itemList[value.id] = value;
-    if (JSON.stringify(items) !== JSON.stringify(itemList)) this.setState({ items: itemList });
+    if (JSON.stringify(items) !== JSON.stringify(itemList)) setState({ items: itemList });
   };
 
-  getFormData = () => {
+  const getFormData = () => {
     const {
       impRecPubl,
       numOrden,
@@ -68,7 +58,7 @@ class MainApp extends Component {
       deliveryDate,
       shipping,
       moreInfo,
-    } = this.state;
+    } = state;
 
     return {
       impRecPubl,
@@ -89,39 +79,18 @@ class MainApp extends Component {
     };
   }
 
- recoverState = () => {
-   if (this.data) {
-     this.setState(this.data.get());
+ const recoverState = () => {
+   if (tempState) {
+     setState(tempState);
    }
  }
 
-  resetState = () => {
-    this.data = new State(this.state);
-    this.setState(
-      {
-        numOrden: '',
-        moreInfo: '',
-        customer: '',
-        tlfno: '',
-        dni: '',
-        location: '',
-        entryDate: '',
-        deliveryDate: '',
-        budget: '',
-        model: '',
-        box: '',
-        control: '',
-        items: [],
-        nconsecionario: 0,
-        companyType: LVMH_TYPE,
-        shipping: 0.0,
-        impRecPubl: 0,
-      },
-    );
+  const resetState = () => {
+    setState(defaultState);
   }
 
-  writeItems = () => {
-    const { items } = this.state;
+  const writeItems = () => {
+    const { items } = state;
     let list = [];
 
     if (items.length > 0) {
@@ -130,17 +99,17 @@ class MainApp extends Component {
           <InvoiceItem
             key={item.id}
             id={item.id}
-            onUpdate={this.onUpdateItem}
+            onUpdate={onUpdateItem}
           />)),
       ];
     }
     return list;
   };
 
-  generateDocument = (doc) => {
+  const generateDocument = (doc) => {
     const {
       companyType, shipping, items, formType,
-    } = this.state;
+    } = state;
     const invoiceMaker = new InvoiceMaker(doc);
     if (companyType.indexOf(OTHERS_TYPE) !== -1) {
       invoiceMaker.pdfSetRjTictacInfo(20, companyType);
@@ -149,67 +118,64 @@ class MainApp extends Component {
       invoiceMaker.pdfSetRjTictacInfo();
     }
     invoiceMaker.pdfSetItems(items, shipping, formType);
-    invoiceMaker.pdfSetDocumentBody(this.state);
-    this.resetState();
+    invoiceMaker.pdfSetDocumentBody(state);
+    resetState();
     return invoiceMaker.getDoc();
   };
 
-  handleAddItem = () => {
-    const { items } = this.state;
+  const handleAddItem = () => {
+    const { items } = state;
     const newItem = {
       id: items.length, amount: 0, name: '', price: 0,
     };
-    this.setState({
+    setState({
       items: [...items, newItem],
     });
   };
 
-  handleChange = name => event => this.setState({ [name]: event.target.value });
+  const handleChange = name => event => setState({ [name]: event.target.value });
 
-  handleChangeToModel = model => () => this.setState({ formType: model });
+  const handleChangeToModel = model => () => setState({ formType: model });
 
-  render = () => {
-    const { formType, companyType } = this.state;
-    return (
-      <div className="layout">
-        <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={this.generateDocument} recoverData={this.recoverState} recoverIsVisible={this.data !== undefined} />
-        <div className="main">
-          <div className="left-menu">
-            <List component="nav">
-              <ListItem
-                onClick={this.handleChangeToModel(TYPE_PVP)}
-                button
-                className={formType.indexOf(TYPE_PVP) !== -1 ? 'selected' : ''}
-              >
-                <ListItemText primary="PVP" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={this.handleChangeToModel(TYPE_RESELLER)}
-                className={formType.indexOf(TYPE_RESELLER) !== -1 ? 'selected' : ''}
-              >
-                <ListItemText primary="Distribuidor" />
-              </ListItem>
-            </List>
-          </div>
-          <div className="content">
-            <FormContent
-              handleChange={this.handleChange}
-              writeItems={this.writeItems}
-              companyType={companyType}
-              formFields={this.getFormData()}
-              formType={formType}
-            />
-          </div>
+  return (
+    <div className="layout">
+      <TopBar className="topbar" title="Ordenes de Trabajo" getDocument={generateDocument} recoverData={recoverState} recoverIsVisible={tempState.numOrden !== ''} />
+      <div className="main">
+        <div className="left-menu">
+          <List component="nav">
+            <ListItem
+              onClick={handleChangeToModel(TYPE_PVP)}
+              button
+              className={state.formType.indexOf(TYPE_PVP) !== -1 ? 'selected' : ''}
+            >
+              <ListItemText primary="PVP" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={handleChangeToModel(TYPE_RESELLER)}
+              className={state.formType.indexOf(TYPE_RESELLER) !== -1 ? 'selected' : ''}
+            >
+              <ListItemText primary="Distribuidor" />
+            </ListItem>
+          </List>
         </div>
-        <div className="add">
-          <button type="button" onClick={this.handleAddItem}>
-            +
-          </button>
+        <div className="content">
+          <FormContent
+            handleChange={handleChange}
+            writeItems={writeItems}
+            companyType={state.companyType}
+            formFields={getFormData()}
+            formType={state.formType}
+          />
         </div>
       </div>
-    );
-  };
+      <div className="add">
+        <button type="button" onClick={handleAddItem}>
+          +
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default MainApp;
