@@ -64,7 +64,7 @@ class InvoiceMaker {
       writeHeaderLine('LVMH RELOJERIA Y JOYERIA ESPAÑA', 10);
       writeHeaderLine('Servicio Técnico Oficial de Canarias');
       writeHeaderLine('TAG-HEUER - ZENITH');
-      writeHeaderLine('CRISTIAN DIOR');
+      writeHeaderLine('DIOR - HUBLOT');
     } else {
       writeHeaderLine('MGI Luxury Group S.A', 12);
       writeHeaderLine('EBEL', 10);
